@@ -211,8 +211,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (id === "dni") {
+      const cleanValue = value.replace(/\./g, '');
       const dniRegex = /^\d{7,8}$/;
-      if (!dniRegex.test(value)) {
+      if (!dniRegex.test(cleanValue)) {
         marcarInvalido(input, "El DNI debe tener entre 7 y 8 números");
         return false;
       }
