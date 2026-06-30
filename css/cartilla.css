@@ -1,0 +1,340 @@
+/* ==========================================================================
+   1. VARIABLES DE IDENTIDAD UNIVERSITARIA & RESET
+   ========================================================================== */
+:root {
+  --color-untref: #002f6c;
+  --color-untref-hover: #001f4d;
+  --color-success-badge: #1a9c5d;
+  --color-alert-badge: #d97706;
+  --fondo-card: #ffffff;
+  --texto-principal: #1f2937;
+  --texto-secundario: #4b5563;
+  --border-color: #e5e7eb;
+  --radius: 8px;
+}
+
+/* Aplicación global de box-sizing para evitar desbordes */
+.filter-section,
+.courses-grid,
+.course-card,
+.course-card * {
+  box-sizing: border-box;
+}
+
+/* ==========================================================================
+   2. BARRA DE HERRAMIENTAS MODERNA Y PREMIUM (Fusión y Elevación)
+   ========================================================================== */
+.filter-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  max-width: 1060px; /* Alineado exacto con el ancho de las cards */
+  margin: 0 auto 3rem auto;
+  padding: 0;
+  width: 100%;
+}
+
+/* Contenedor del Buscador: Ahora ocupa el flujo principal expandido */
+.search-container {
+  display: flex;
+  align-items: center;
+  flex-grow: 1; /* Ocupa todo el espacio disponible hasta topar con filtros */
+  position: relative;
+  background-color: var(--fondo-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px; /* Bordes más curvos y modernos */
+  padding: 0.25rem 0.5rem;
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+/* Enfoque sutil del buscador completo */
+.search-container:focus-within {
+  border-color: var(--color-untref);
+  box-shadow: 0 4px 12px rgba(0, 47, 108, 0.05);
+}
+
+/* Lupa integrada dentro de la barra al inicio */
+.search-icon-inside {
+  color: var(--texto-secundario);
+  font-size: 1rem;
+  padding: 0 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none; /* Icono meramente ilustrativo */
+}
+
+/* Input limpio que fluye de inicio a fin */
+.search-container input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 0.65rem 0.5rem;
+  font-size: 0.95rem;
+  color: var(--texto-principal);
+  outline: none;
+}
+
+/* Botón de Filtros Estilo Flotante / Elevado (Moderno) */
+.filter-dropdown-container {
+  position: relative;
+}
+
+.btn-filter-toggle {
+  background-color: var(--fondo-card);
+  border: 1px solid var(--border-color);
+  padding: 0.7rem 1.3rem;
+  border-radius: 8px; /* Hace juego con las esquinas de las tarjetas y buscador */
+  cursor: pointer;
+  color: var(--texto-principal);
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  height: 46px; /* Altura estilizada en sintonía con el buscador */
+  white-space: nowrap;
+
+  /* Sombra inicial suave para dar el efecto de que sobresale */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  transition:
+    transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.2s;
+}
+
+/* Efecto de Sobresalto (Hover) */
+.btn-filter-toggle:hover {
+  border-color: var(--color-untref);
+  color: var(--color-untref);
+  transform: translateY(-2px); /* Se eleva físicamente */
+  box-shadow: 0 6px 16px rgba(0, 47, 108, 0.12); /* Sombra intensa pero fina */
+}
+
+/* Menú Desplegable Adaptado a la Estética Elevada */
+.filter-menu {
+  position: absolute;
+  top: 120%;
+  right: 0;
+  background-color: var(--fondo-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  padding: 0.5rem;
+  display: none;
+  z-index: 110;
+  min-width: 210px;
+  transform-origin: top right;
+}
+
+.filter-menu.show {
+  display: block;
+}
+
+.filter-option {
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 0.65rem 1rem;
+  font-size: 0.85rem;
+  color: var(--texto-principal);
+  cursor: pointer;
+  border-radius: 6px;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
+}
+
+.filter-option:hover,
+.filter-option.active {
+  background-color: rgba(0, 47, 108, 0.05);
+  color: var(--color-untref);
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   3. GRILLA DE CONTENIDOS (Nielsen #4)
+   ========================================================================== */
+.courses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+  max-width: 1060px;
+  margin: 0 auto;
+  align-items: stretch; /* Fuerza a que todas las tarjetas midan exactamente lo mismo de alto */
+}
+
+/* ==========================================================================
+   4. ESTRUCTURA INTERNA DE LA TARJETA (Alineación Absoluta por Flujo Relativo)
+   ========================================================================== */
+.course-card {
+  background-color: var(--fondo-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+
+.course-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
+}
+
+.course-card-content {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; /* Distribuye el espacio sobrante de forma inteligente */
+}
+
+/* Cabecera Superior Fluyente: Envía el Badge a la esquina derecha sin usar absolute */
+.course-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 28px; /* Mantiene la altura aunque la card no tenga badge para no desalinear */
+  margin-bottom: 0.75rem;
+  width: 100%;
+}
+
+.course-category {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--texto-secundario);
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+/* El Badge en la Esquina Superior por flujo relativo */
+.course-badge {
+  color: white;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.3rem 0.65rem;
+  border-radius: 4px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  white-space: nowrap; /* Impide que el texto se parta en pantallas chicas */
+}
+
+.badge-popular {
+  background-color: var(--color-alert-badge);
+}
+.badge-free {
+  background-color: var(--color-success-badge);
+}
+
+/* Título Sincronizado: Forzado al mismo bloque de renglones */
+.course-title {
+  font-size: 1.25rem;
+  line-height: 1.4;
+  color: var(--texto-principal);
+  height: 3.5rem; /* Altura fija calculada para un máximo de 2 renglones horizontales constantes */
+  margin-bottom: 0.75rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Descripción Sincronizada */
+.course-description {
+  font-size: 0.9rem;
+  color: var(--texto-secundario);
+  line-height: 1.5;
+  height: 4rem; /* Sincroniza la línea base para el bloque de iconos que viene abajo */
+  margin-bottom: 1.25rem;
+  overflow: hidden;
+}
+
+/* Metadatos (Iconos Duración / Sede) */
+.course-meta {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  color: var(--texto-secundario);
+  font-size: 0.9rem;
+  min-height: 20px;
+}
+
+/* Requisitos Académicos: Clava el footer abajo y empareja la línea punteada */
+.academic-requirements {
+  margin-top: auto; /* Empuja el footer al fondo de la tarjeta de forma idéntica */
+  padding-top: 0.85rem;
+  margin-bottom: 1rem;
+  border-top: 1px dashed var(--border-color);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--texto-secundario);
+  min-height: 50px; /* Sincroniza las cajas de texto de requisitos */
+}
+
+/* ==========================================================================
+   5. SECTOR DE PRECIOS Y ACCIONES PRINCIPALES
+   ========================================================================== */
+.course-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  width: 100%;
+  border-top: 1px solid var(--border-color);
+  padding-top: 1rem;
+}
+
+.course-footer-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 30px;
+}
+
+.course-price {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--texto-principal);
+}
+
+.price-free {
+  color: var(--color-success-badge) !important;
+}
+
+.course-pdf-link {
+  font-size: 0.8rem;
+  text-decoration: none;
+  color: var(--texto-secundario);
+  font-weight: 500;
+}
+
+.course-pdf-link:hover {
+  color: #dc3545;
+}
+
+/* Botón de Inscripción Unificado UNTREF */
+.btn-detail {
+  display: block;
+  width: 100%;
+  text-align: center;
+  text-decoration: none;
+  background-color: var(--color-untref);
+  color: white !important;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.8rem 1rem;
+  border-radius: 4px;
+  transition: background-color 0.15s ease-in-out;
+  border: none;
+}
+
+.btn-detail:hover {
+  background-color: var(--color-untref-hover);
+}

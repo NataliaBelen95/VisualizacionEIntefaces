@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNTREF | Confirmar Correo</title>
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .verify-layout {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 160px);
+            padding: 2rem;
+            background-color: var(--fondo-principal);
+        }
+
+        .verify-card {
+            background-color: var(--fondo-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 440px;
+            box-shadow: var(--shadow-lg);
+            padding: 3rem 2.5rem;
+            text-align: center;
+        }
+
+        .verify-icon {
+            font-size: 3.5rem;
+            color: var(--color-untref);
+            margin-bottom: 1.5rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .form-title {
+            font-size: 1.45rem;
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+            color: var(--texto-principal);
+        }
+
+        .form-subtitle {
+            font-size: 0.85rem;
+            color: var(--texto-secundario);
+            line-height: 1.5;
+            margin-bottom: 2rem;
+        }
+
+        .email-highlight {
+            font-weight: 700;
+            color: var(--texto-principal);
+            word-break: break-all;
+        }
+
+        .code-inputs {
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .code-box {
+            width: 50px;
+            height: 60px;
+            border-radius: var(--radius-sm);
+            border: 1.5px solid var(--border-color);
+            background-color: var(--fondo-principal);
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--texto-principal);
+            font-family: monospace;
+            transition: var(--transition);
+        }
+
+        .code-box:focus {
+            border-color: var(--color-untref);
+            background-color: var(--fondo-card);
+            box-shadow: 0 0 0 3px var(--color-tech-light);
+            outline: none;
+        }
+
+        .resend-box {
+            font-size: 0.8rem;
+            color: var(--texto-muted);
+            margin-bottom: 2rem;
+        }
+
+        .resend-link {
+            color: var(--color-untref);
+            text-decoration: none;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .resend-link.disabled {
+            color: var(--texto-muted);
+            cursor: not-allowed;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAV BAR -->
+    <nav class="navbar">
+        <a href="../index.html" class="logo-untref">
+            <i class="fas fa-graduation-cap"></i> UNTREF <span>| Formación</span>
+        </a>
+        <div class="nav-menu" id="nav-menu">
+            <a href="iniciar-sesion.html" class="nav-item"><i class="fas fa-arrow-left"></i> Volver</a>
+        </div>
+        <div class="nav-actions">
+            <!-- Botón de Modo Oscuro -->
+            <button id="theme-toggle" class="nav-item-btn" aria-label="Cambiar modo de pantalla">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- VERIFICACIÓN DE EMAIL -->
+    <div class="verify-layout">
+        <div class="verify-card">
+            <i class="far fa-envelope-open verify-icon"></i>
+            <h3 class="form-title">Verificá tu correo</h3>
+            <p class="form-subtitle">Enviamos un código de confirmación temporal de 4 dígitos a la casilla:<br><span class="email-highlight" id="email-target">ejemplo@correo.com</span></p>
+            
+            <form onsubmit="handleVerification(event)">
+                <div class="code-inputs">
+                    <input type="text" maxlength="1" class="code-box" required oninput="moveNext(this, 'box-2')" id="box-1">
+                    <input type="text" maxlength="1" class="code-box" required oninput="moveNext(this, 'box-3')" id="box-2" onkeydown="movePrev(event, 'box-1')">
+                    <input type="text" maxlength="1" class="code-box" required oninput="moveNext(this, 'box-4')" id="box-3" onkeydown="movePrev(event, 'box-2')">
+                    <input type="text" maxlength="1" class="code-box" required oninput="moveNext(this, '')" id="box-4" onkeydown="movePrev(event, 'box-3')">
+                </div>
+
+                <div class="resend-box">
+                    ¿No recibiste el correo? <span id="countdown-text" class="resend-link disabled">Reenviar en 60s</span>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full" style="padding: 1rem; font-size: 0.95rem;">
+                    Confirmar Código <i class="fas fa-check-circle" style="margin-left: 0.5rem;"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3 style="font-size: 1.2rem; color: var(--color-untref); margin-bottom: 1rem; font-weight: 800;">
+                    <i class="fas fa-graduation-cap"></i> UNTREF Virtual
+                </h3>
+                <p>Portal oficial de admisiones de la Universidad Virtual Tres de Febrero. Educación pública de calidad, accesible desde cualquier lugar del país.</p>
+                <div style="display:flex; gap:1rem; margin-top:1.25rem; font-size:1.1rem;">
+                    <a href="#" style="color:var(--texto-muted);"><i class="fab fa-facebook"></i></a>
+                    <a href="#" style="color:var(--texto-muted);"><i class="fab fa-instagram"></i></a>
+                    <a href="#" style="color:var(--texto-muted);"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h4>Contacto y Soporte</h4>
+                <p style="margin-bottom:0.75rem;"><i class="far fa-envelope"></i> admisiones@untref.edu.ar</p>
+                <p style="margin-bottom:0.75rem;"><i class="fas fa-phone-alt"></i> +54 (11) 4734-2200</p>
+                <p><i class="far fa-clock"></i> Lunes a Viernes de 9:00 a 18:00 hs</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            UNTREF Virtual © 2026 • Universidad Virtual Tres de Febrero • Todos los derechos reservados.
+        </div>
+    </footer>
+
+    <!-- LOGIC SCRIPTS -->
+    <script src="../js/main.js"></script>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const email = params.get('email') || 'ejemplo@correo.com';
+        const nextUrl = params.get('next') || '../index.html';
+
+        document.getElementById('email-target').innerText = email;
+        document.getElementById('box-1').focus();
+
+        // Auto-tab logic para los cuadros de código
+        function moveNext(input, nextId) {
+            // Asegurar que solo sea un dígito numérico
+            input.value = input.value.replace(/\D/g, '');
+            
+            if (input.value.length === 1 && nextId !== '') {
+                const nextInput = document.getElementById(nextId);
+                if (nextInput) nextInput.focus();
+            }
+        }
+
+        function movePrev(event, prevId) {
+            if (event.key === 'Backspace' && event.target.value.length === 0) {
+                const prevInput = document.getElementById(prevId);
+                if (prevInput) {
+                    prevInput.focus();
+                    prevInput.value = '';
+                }
+            }
+        }
+
+        // Cuenta regresiva de reenvío de código (Bugfix: reinicio de intervalo)
+        let countdown = 60;
+        const countdownText = document.getElementById('countdown-text');
+        let timerInterval = null;
+
+        function iniciarCountdown() {
+            countdown = 60;
+            countdownText.innerText = `Reenviar en ${countdown}s`;
+            countdownText.classList.add('disabled');
+            countdownText.onclick = null;
+            
+            if (timerInterval) clearInterval(timerInterval);
+            
+            timerInterval = setInterval(() => {
+                countdown--;
+                if (countdown > 0) {
+                    countdownText.innerText = `Reenviar en ${countdown}s`;
+                } else {
+                    clearInterval(timerInterval);
+                    countdownText.innerText = 'Reenviar código';
+                    countdownText.classList.remove('disabled');
+                    countdownText.onclick = () => {
+                        alert('Código reenviado con éxito al correo registrado.');
+                        iniciarCountdown(); // Reiniciar la cuenta regresiva e intervalo
+                    };
+                }
+            }, 1000);
+        }
+
+        // Inicializar al cargar
+        iniciarCountdown();
+
+        function handleVerification(event) {
+            event.preventDefault();
+            
+            // Simular éxito de verificación
+            const name = localStorage.getItem("untref_temp_register_name") || "Alumno";
+            localStorage.setItem("untref_user_name", name);
+            localStorage.removeItem("untref_temp_register_name");
+            
+            alert('¡Correo verificado con éxito! Cuenta activada.');
+            
+            // Redirigir
+            window.location.href = nextUrl;
+        }
+    </script>
+</body>
+</html>

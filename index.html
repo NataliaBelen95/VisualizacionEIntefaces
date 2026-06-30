@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNTREF | Oferta Académica y Formación Continua</title>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Estilos específicos de Home */
+        .hero-banner {
+            background: linear-gradient(135deg, var(--color-untref) 0%, #1e40af 60%, var(--color-tech) 100%);
+            border-radius: var(--radius-lg);
+            padding: 3rem;
+            color: #ffffff;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .hero-banner::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 250px;
+            height: 250px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .hero-banner::after {
+            content: '';
+            position: absolute;
+            bottom: -80px;
+            right: 100px;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .hero-greeting {
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            opacity: 0.85;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-headline {
+            font-family: var(--fuente-titulo);
+            font-size: 2.25rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-search-box {
+            display: flex;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.15);
+            border: 1.5px solid rgba(255, 255, 255, 0.25);
+            border-radius: var(--radius);
+            padding: 0.25rem 0.5rem;
+            max-width: 500px;
+            backdrop-filter: blur(8px);
+            transition: var(--transition);
+        }
+
+        .hero-search-box:focus-within {
+            background-color: rgba(255, 255, 255, 0.25);
+            border-color: #ffffff;
+        }
+
+        .hero-search-box i {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 0 0.75rem;
+            font-size: 1rem;
+        }
+
+        .hero-search-box input {
+            width: 100%;
+            border: none;
+            background: transparent;
+            padding: 0.65rem 0.5rem;
+            font-size: 0.95rem;
+            color: #ffffff;
+            outline: none;
+            font-family: var(--fuente-principal);
+        }
+
+        .hero-search-box input::placeholder {
+            color: rgba(255, 255, 255, 0.75);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-title i {
+            color: var(--color-tech);
+        }
+
+        /* Slider horizontal de recomendados (Gestalt: Proximidad) */
+        .recomended-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        @media (max-width: 900px) {
+            .recomended-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 600px) {
+            .recomended-row {
+                grid-template-columns: 1fr;
+            }
+            .hero-banner {
+                padding: 1.75rem;
+            }
+            .hero-headline {
+                font-size: 1.65rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAV BAR (Nielsen #1, #3 y #4) -->
+    <nav class="navbar">
+        <a href="index.html" class="logo-untref">
+            <i class="fas fa-graduation-cap"></i> UNTREF <span>| Formación</span>
+        </a>
+
+        <div class="nav-menu" id="nav-menu">
+            <button class="menu-close" id="menu-close-btn" aria-label="Cerrar menú">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <a href="index.html" class="nav-item"><i class="fas fa-search-plus"></i> Catálogo</a>
+            <a href="pages/aula-virtual.html" class="nav-item"><i class="fas fa-laptop-code"></i> Aula Virtual</a>
+            
+            <!-- Carrito con indicador dinámico -->
+            <div class="cart-icon-wrapper nav-item" onclick="window.location.href='pages/carrito.html'">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Carrito</span>
+                <span class="cart-badge" style="display: none;">0</span>
+            </div>
+
+            <a href="pages/perfil.html" class="nav-item"><i class="fas fa-user-circle"></i> Mi Perfil</a>
+        </div>
+
+        <div class="nav-actions">
+            <!-- Botón de Modo Oscuro -->
+            <button id="theme-toggle" class="nav-item-btn" aria-label="Cambiar modo de pantalla">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button class="menu-toggle" id="menu-open-btn" aria-label="Abrir menú">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+    
+    <!-- CONTENEDOR APP -->
+    <div class="app-container">
+        
+        <!-- SIDEBAR FILTROS (Gestalt: Similitud y Proximidad) -->
+        <aside class="sidebar">
+            <h4 class="sidebar-title">Áreas de Estudio</h4>
+            <a href="#" class="sidebar-link active" onclick="filtrar('all', this, event)"><i class="fas fa-border-all"></i> Ver Todo</a>
+            <a href="#" class="sidebar-link" onclick="filtrar('Tecnicaturas', this, event)"><i class="fas fa-tools"></i> Tecnicaturas</a>
+            <a href="#" class="sidebar-link" onclick="filtrar('Licenciaturas', this, event)"><i class="fas fa-university"></i> Licenciaturas</a>
+            <a href="#" class="sidebar-link" onclick="filtrar('Posgrados', this, event)"><i class="fas fa-award"></i> Posgrados</a>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main>
+            <!-- Hero banner (Nielsen #8: Diseño Minimalista) -->
+            <div class="hero-banner">
+                <div class="hero-greeting">Admisiones Abiertas cohorte 2026</div>
+                <div class="hero-headline">Encontrá tu carrera,<br>diseñá tu futuro.</div>
+                
+                <div class="hero-search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="course-search" placeholder="¿Qué te gustaría estudiar hoy?" oninput="buscarCurso(this.value)">
+                </div>
+            </div>
+
+            <!-- Catálogo Completo -->
+            <section>
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-graduation-cap"></i> Oferta Académica</h2>
+                </div>
+                <div class="courses-grid" id="courses-container">
+                    <!-- Cards generales inyectadas por JS -->
+                </div>
+            </section>
+        </main>
+
+        <!-- COLUMNA DERECHA: NOVEDADES Y ANUNCIOS (Ad-Sidebar) -->
+        <aside class="ads-sidebar">
+            <h4 class="sidebar-title" style="margin-left: 0;"><i class="fas fa-bullhorn"></i> Novedades</h4>
+            
+            <article class="ad-card">
+                <span class="ad-badge">Beneficio</span>
+                <h5 class="ad-title">Becas de Apoyo Económico</h5>
+                <p class="ad-desc">Subsidios y bonificaciones de matrícula abiertas para ingresantes de posgrado y diplomaturas 2026.</p>
+                <a href="#" class="ad-link" onclick="alert('Convocatoria abierta. Más información en Secretaría de Asuntos Estudiantiles.'); return false;">Saber más <i class="fas fa-chevron-right" style="font-size:0.65rem;"></i></a>
+            </article>
+
+            <article class="ad-card">
+                <span class="ad-badge">Webinar</span>
+                <h5 class="ad-title">Charla Informativa UX/UI</h5>
+                <p class="ad-desc">Conocé el plan de estudios, las tecnologías y salida laboral con el director de la carrera.</p>
+                <a href="#" class="ad-link" onclick="alert('Inscripción registrada. Recibirás el enlace de Zoom en tu correo.'); return false;">Registrarse <i class="fas fa-chevron-right" style="font-size:0.65rem;"></i></a>
+            </article>
+
+            <article class="ad-card">
+                <span class="ad-badge">Servicio</span>
+                <h5 class="ad-title">Biblioteca Digital UNTREF</h5>
+                <p class="ad-desc">Acceso gratuito e ilimitado a más de 50.000 libros, apuntes y revistas de investigación.</p>
+                <a href="#" class="ad-link" onclick="alert('Redireccionando a la red de Bibliotecas UNTREF...'); return false;">Ingresar <i class="fas fa-chevron-right" style="font-size:0.65rem;"></i></a>
+            </article>
+        </aside>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3 style="font-size: 1.2rem; color: var(--color-untref); margin-bottom: 1rem; font-weight: 800;">
+                    <i class="fas fa-graduation-cap"></i> UNTREF Virtual
+                </h3>
+                <p>Portal oficial de admisiones de la Universidad Virtual Tres de Febrero. Educación pública de calidad, accesible desde cualquier lugar del país.</p>
+                <div style="display:flex; gap:1rem; margin-top:1.25rem; font-size:1.1rem;">
+                    <a href="#" style="color:var(--texto-muted);"><i class="fab fa-facebook"></i></a>
+                    <a href="#" style="color:var(--texto-muted);"><i class="fab fa-instagram"></i></a>
+                    <a href="#" style="color:var(--texto-muted);"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h4>Contacto y Soporte</h4>
+                <p style="margin-bottom:0.75rem;"><i class="far fa-envelope"></i> admisiones@untref.edu.ar</p>
+                <p style="margin-bottom:0.75rem;"><i class="fas fa-phone-alt"></i> +54 (11) 4734-2200</p>
+                <p><i class="far fa-clock"></i> Lunes a Viernes de 9:00 a 18:00 hs</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            UNTREF Virtual © 2026 • Universidad Virtual Tres de Febrero • Todos los derechos reservados.
+        </div>
+    </footer>
+
+    <!-- LOGIC SCRIPTS -->
+    <script src="js/cursos.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        let activeCategory = 'all';
+        let searchQuery = '';
+
+        window.onload = () => {
+            // Inicializar renderizado
+            ejecutarFiltros();
+        };
+
+        function filtrar(cat, elem, event) {
+            if (event) event.preventDefault();
+            activeCategory = cat;
+            
+            // Gestalt: Cambiar visual del botón activo
+            document.querySelectorAll('.sidebar-link').forEach(link => link.classList.remove('active'));
+            elem.classList.add('active');
+            
+            ejecutarFiltros();
+        }
+
+        function buscarCurso(query) {
+            searchQuery = query;
+            ejecutarFiltros();
+        }
+
+        function ejecutarFiltros() {
+            // Helper de normalización para soportar acentos de forma robusta
+            const normalize = str => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+            const normQuery = normalize(searchQuery);
+
+            let keys = Object.keys(CAT_CURSOS).filter(key => {
+                const curso = CAT_CURSOS[key];
+                const coincideCat = (activeCategory === 'all' || curso.cat === activeCategory);
+                const coincideBusqueda = (
+                    normalize(curso.titulo).includes(normQuery) || 
+                    normalize(curso.desc).includes(normQuery) ||
+                    normalize(curso.cat).includes(normQuery)
+                );
+                return coincideCat && coincideBusqueda;
+            });
+            renderizarTarjetas('courses-container', keys);
+        }
+    </script>
+</body>
+</html>

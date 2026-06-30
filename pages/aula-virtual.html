@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNTREF | Campus Virtual</title>
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .aula-layout {
+            display: grid;
+            grid-template-columns: 1.3fr 0.7fr;
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            align-items: start;
+        }
+
+        /* Reproductor de Video Premium (Gestalt: Cierre, Figura/Fondo) */
+        .video-player-container {
+            background-color: #020617;
+            border-radius: var(--radius-lg);
+            aspect-ratio: 16/9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-color);
+            color: #38bdf8;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .video-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(transparent, rgba(2, 6, 23, 0.95));
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            gap: 1.25rem;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .timeline-bar {
+            flex-grow: 1;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 99px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .timeline-progress {
+            width: 35%;
+            height: 100%;
+            background: var(--color-tech);
+            border-radius: 99px;
+        }
+
+        .class-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .class-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            cursor: pointer;
+            background-color: var(--fondo-card);
+            transition: var(--transition);
+        }
+
+        .class-item:hover, .class-item.active {
+            border-color: var(--color-tech);
+            background-color: var(--fondo-principal);
+        }
+
+        .class-item.active i {
+            color: var(--color-tech);
+        }
+
+        .resources-box {
+            background-color: var(--fondo-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem 2rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .resources-box h4 {
+            font-size: 1.05rem;
+            margin-bottom: 1rem;
+            border-bottom: 1.5px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        @media (max-width: 900px) {
+            .aula-layout {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAV BAR (Nielsen #1, #3 y #4) -->
+    <nav class="navbar">
+        <a href="../index.html" class="logo-untref">
+            <i class="fas fa-graduation-cap"></i> UNTREF <span>| Formación</span>
+        </a>
+
+        <div class="nav-menu" id="nav-menu">
+            <button class="menu-close" id="menu-close-btn" aria-label="Cerrar menú">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <a href="../index.html" class="nav-item"><i class="fas fa-search-plus"></i> Catálogo</a>
+            <a href="aula-virtual.html" class="nav-item"><i class="fas fa-laptop-code"></i> Aula Virtual</a>
+            
+            <!-- Carrito con indicador dinámico -->
+            <div class="cart-icon-wrapper nav-item" onclick="window.location.href='carrito.html'">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Carrito</span>
+                <span class="cart-badge" style="display: none;">0</span>
+            </div>
+
+            <a href="perfil.html" class="nav-item"><i class="fas fa-user-circle"></i> Mi Perfil</a>
+        </div>
+
+        <div class="nav-actions">
+            <!-- Botón de Modo Oscuro -->
+            <button id="theme-toggle" class="nav-item-btn" aria-label="Cambiar modo de pantalla">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button class="menu-toggle" id="menu-open-btn" aria-label="Abrir menú">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- CAMPUS VIRTUAL AULA GRID -->
+    <div class="aula-layout">
+        
+        <!-- COLUMNA PRINCIPAL: VIDEO Y DESCRIPCION -->
+        <main style="display: flex; flex-direction: column; gap: 2rem;">
+            
+            <!-- Breadcrumbs -->
+            <div class="breadcrumb" style="margin-bottom:0.5rem;">
+                <a href="perfil.html">Mi Perfil</a>
+                <span><i class="fas fa-chevron-right" style="font-size:0.6rem;"></i></span>
+                <span id="bread-curso">Curso Activo</span>
+                <span><i class="fas fa-chevron-right" style="font-size:0.6rem;"></i></span>
+                <span style="color: var(--texto-principal);">Clase 3 en vivo</span>
+            </div>
+
+            <!-- Reproductor de Video (Gestalt: Figura/Fondo) -->
+            <div class="video-player-container">
+                <!-- Capa decorativa en background -->
+                <div style="position:absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(135deg, rgba(0, 47, 108, 0.4) 0%, rgba(2, 6, 23, 0.9) 100%); z-index:1;"></div>
+                
+                <i class="far fa-play-circle" style="font-size: 5rem; z-index:2; cursor:pointer; opacity: 0.85; transition: var(--transition);"></i>
+                <h4 style="color: #ffffff; z-index:2; font-size:1.15rem; margin-top:1rem; text-shadow:0 2px 4px rgba(0,0,0,0.5);" id="aula-clase-titulo">Clase 3: Introducción al Análisis Exploratorio</h4>
+                <p style="color: var(--color-tech); z-index:2; font-size: 0.85rem; margin-top:0.25rem;" id="aula-curso-nombre">Diplomatura en Ciencia de Datos Aplicada</p>
+                
+                <!-- Controles -->
+                <div class="video-controls">
+                    <i class="fas fa-play" style="color: white; cursor: pointer;"></i>
+                    <div class="timeline-bar"><div class="timeline-progress"></div></div>
+                    <span style="color: white; font-size: 0.75rem; font-family: monospace;">24:18 / 1:30:00</span>
+                    <i class="fas fa-volume-up" style="color: white; cursor: pointer;"></i>
+                    <i class="fas fa-expand" style="color: white; cursor: pointer;"></i>
+                </div>
+            </div>
+
+            <!-- Recursos de la clase (Nielsen #10: Help and documentation) -->
+            <div class="resources-box">
+                <h4><i class="far fa-folder-open" style="color: var(--color-tech);"></i> Recursos Descargables</h4>
+                <ul class="download-list" id="resources-list">
+                    <!-- Inyectados por JS -->
+                </ul>
+            </div>
+        </main>
+
+        <!-- COLUMNA LATERAL: ÍNDICE DE CONTENIDOS -->
+        <aside style="display: flex; flex-direction: column; gap: 2rem;">
+            
+            <!-- Índice de contenidos (Gestalt: Proximidad y Continuidad) -->
+            <div class="resources-box" style="padding:1.5rem;">
+                <h4 style="border-bottom:none; margin-bottom: 1rem;"><i class="fas fa-list-ul"></i> Índice de Clases</h4>
+                <ul class="class-list">
+                    <li class="class-item">
+                        <div>
+                            <i class="fas fa-check-circle" style="color: var(--color-success); margin-right: 0.5rem;"></i>
+                            <strong>Clase 1: Configuración</strong>
+                        </div>
+                        <span style="font-size: 0.7rem; color: var(--texto-muted);">Grabada</span>
+                    </li>
+                    <li class="class-item">
+                        <div>
+                            <i class="fas fa-check-circle" style="color: var(--color-success); margin-right: 0.5rem;"></i>
+                            <strong>Clase 2: Fundamentos</strong>
+                        </div>
+                        <span style="font-size: 0.7rem; color: var(--texto-muted);">Grabada</span>
+                    </li>
+                    <li class="class-item active">
+                        <div>
+                            <i class="fas fa-play" style="margin-right: 0.5rem;"></i>
+                            <strong>Clase 3: Desarrollo Práctico</strong>
+                        </div>
+                        <span style="font-size: 0.7rem; color: var(--color-tech); font-weight:700;">Viendo</span>
+                    </li>
+                    <li class="class-item" style="opacity: 0.6; cursor: not-allowed;">
+                        <div>
+                            <i class="far fa-calendar" style="margin-right: 0.5rem;"></i>
+                            <strong>Clase 4: Evaluación final</strong>
+                        </div>
+                        <span style="font-size: 0.7rem; color: var(--texto-muted);">Pendiente</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Panel de Avisos (Nielsen #1: Visibilidad) -->
+            <div class="resources-box" style="background-color: rgba(217, 119, 6, 0.08); border-color: var(--color-warning); padding:1.5rem;">
+                <h4 style="border-bottom:none; margin-bottom: 0.5rem; color: var(--color-warning);"><i class="far fa-bell"></i> Avisos Académicos</h4>
+                <p style="font-size: 0.85rem; color: var(--texto-secundario); line-height: 1.5;">
+                    La entrega del Trabajo Práctico Integrador vence este Domingo a las 23:59 hs. El canal de consultas del buzón de entrega se encuentra disponible.
+                </p>
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3 style="font-size: 1.2rem; color: var(--color-untref); margin-bottom: 1rem; font-weight: 800;">
+                    <i class="fas fa-graduation-cap"></i> UNTREF Virtual
+                </h3>
+                <p>Portal oficial de admisiones de la Universidad Virtual Tres de Febrero. Educación pública de calidad, accesible desde cualquier lugar del país.</p>
+                <div style="display:flex; gap:1rem; margin-top:1.25rem; font-size:1.1rem;">
+                    <a href="#" style="color:var(--texto-muted);"><i class="fab fa-facebook"></i></a>
+                    <a href="#" style="color:var(--texto-muted);"><i class="fab fa-instagram"></i></a>
+                    <a href="#" style="color:var(--texto-muted);"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h4>Contacto y Soporte</h4>
+                <p style="margin-bottom:0.75rem;"><i class="far fa-envelope"></i> admisiones@untref.edu.ar</p>
+                <p style="margin-bottom:0.75rem;"><i class="fas fa-phone-alt"></i> +54 (11) 4734-2200</p>
+                <p><i class="far fa-clock"></i> Lunes a Viernes de 9:00 a 18:00 hs</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            UNTREF Virtual © 2026 • Universidad Virtual Tres de Febrero • Todos los derechos reservados.
+        </div>
+    </footer>
+
+    <!-- LOGIC SCRIPTS -->
+    <script src="../js/cursos.js"></script>
+    <script src="../js/main.js"></script>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const cursoKey = params.get('curso') || 'datos';
+        const curso = CAT_CURSOS[cursoKey];
+
+        const recursosPorCurso = {
+            datos: [
+                { nombre: "Notebook_Clase3_AnalisisPredictivo.ipynb", tipo: "code", icon: "far fa-file-code", color: "#d97706" },
+                { nombre: "Presentacion_Teorica_Unidad2.pdf", tipo: "pdf", icon: "far fa-file-pdf", color: "#ef4444" },
+                { nombre: "Dataset_Oficial_Facturacion_Kaggle.csv", tipo: "csv", icon: "fas fa-table", color: "#10b981" }
+            ],
+            salud: [
+                { nombre: "Planilla_Auditoria_Presupuestos.xlsx", tipo: "excel", icon: "far fa-file-excel", color: "#16a34a" },
+                { nombre: "Manual_Facturacion_Sanitaria_Nacional.pdf", tipo: "pdf", icon: "far fa-file-pdf", color: "#ef4444" }
+            ],
+            ux: [
+                { nombre: "Libreria_Componentes_Figma_Clase3.fig", tipo: "figma", icon: "fab fa-figma", color: "#a259ff" },
+                { nombre: "Guia_Investigacion_Heuristicas_Nielsen.pdf", tipo: "pdf", icon: "far fa-file-pdf", color: "#ef4444" }
+            ]
+        };
+
+        const clasesPorCurso = {
+            datos: "Clase 3: Introducción al Análisis Exploratorio de Datos (EDA)",
+            salud: "Clase 3: Costos, Facturación Sanitaria y Presupuestos",
+            ux: "Clase 3: Diseño de Wireframes de Alta Fidelidad en Figma"
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Verificar sesión activa en local storage
+            const storedName = localStorage.getItem("untref_user_name");
+            if (!storedName) {
+                // Redirigir a iniciar sesión
+                window.location.href = `iniciar-sesion.html?next=aula-virtual.html?curso=${cursoKey}`;
+                return;
+            }
+
+            if (curso) {
+                document.getElementById('bread-curso').innerText = curso.titulo;
+                document.getElementById('aula-curso-nombre').innerText = curso.titulo;
+                
+                // Clase título
+                if (clasesPorCurso[cursoKey]) {
+                    document.getElementById('aula-clase-titulo').innerText = clasesPorCurso[cursoKey];
+                }
+
+                // Inyectar descargables
+                const recursos = recursosPorCurso[cursoKey] || recursosPorCurso['datos'];
+                const recContainer = document.getElementById('resources-list');
+                if (recContainer) {
+                    recContainer.innerHTML = recursos.map(r => `
+                        <li>
+                            <a href="#" download>
+                                <i class="${r.icon}" style="color:${r.color}; font-size:1.15rem;"></i>
+                                <span>${r.nombre}</span>
+                            </a>
+                        </li>
+                    `).join('');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

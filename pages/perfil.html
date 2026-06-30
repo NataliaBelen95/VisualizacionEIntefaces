@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNTREF | Mi Perfil Académico</title>
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .dashboard-layout {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .welcome-card {
+            background: linear-gradient(135deg, var(--color-untref) 0%, #1e3a8a 100%);
+            color: #ffffff;
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .badge-status {
+            background-color: var(--color-success);
+            color: #ffffff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+
+        .panel-course-card {
+            background-color: var(--fondo-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 2.5rem;
+        }
+
+        .course-info-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1.5px solid var(--border-color);
+            padding-bottom: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Anillo SVG Animado de Progreso */
+        .progress-ring-box {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring__circle {
+            stroke-dasharray: 226; /* 2 * PI * r (r=36) */
+            stroke-dashoffset: 226;
+            transition: stroke-dashoffset 0.5s ease-out;
+        }
+
+        .progress-text {
+            position: absolute;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--texto-principal);
+            font-family: var(--fuente-titulo);
+        }
+
+        .active-course-section h3,
+        .recommendations-section h3,
+        .cart-section h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .active-course-section h3 i,
+        .recommendations-section h3 i,
+        .cart-section h3 i {
+            color: var(--color-tech);
+        }
+
+        .recommendations-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .sidebar-box {
+            background-color: var(--fondo-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .sidebar-box h4 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            border-bottom: 1.5px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .download-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .download-list li a {
+            text-decoration: none;
+            color: var(--texto-secundario);
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .download-list li a:hover {
+            color: var(--color-tech);
+        }
+
+        /* Estilos del Módulo Carrito en Perfil */
+        .cart-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.5rem;
+        }
+
+        .cart-table th, .cart-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .cart-table th {
+            font-weight: 700;
+            color: var(--texto-muted);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+
+        .cart-table td {
+            font-size: 0.9rem;
+        }
+
+        .cart-empty-message {
+            border: 2px dashed var(--border-color);
+            border-radius: var(--radius);
+            padding: 2.5rem;
+            text-align: center;
+            color: var(--texto-secundario);
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard-layout {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            .recommendations-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAV BAR (Nielsen #1, #3 y #4) -->
+    <nav class="navbar">
+        <a href="../index.html" class="logo-untref">
+            <i class="fas fa-graduation-cap"></i> UNTREF <span>| Formación</span>
+        </a>
+
+        <div class="nav-menu" id="nav-menu">
+            <button class="menu-close" id="menu-close-btn" aria-label="Cerrar menú">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <a href="../index.html" class="nav-item"><i class="fas fa-search-plus"></i> Catálogo</a>
+            <a href="aula-virtual.html" class="nav-item"><i class="fas fa-laptop-code"></i> Aula Virtual</a>
+            
+            <!-- Carrito con indicador dinámico -->
+            <div class="cart-icon-wrapper nav-item" onclick="window.location.href='carrito.html'">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Carrito</span>
+                <span class="cart-badge" style="display: none;">0</span>
+            </div>
+
+            <a href="perfil.html" class="nav-item"><i class="fas fa-user-circle"></i> Mi Perfil</a>
+        </div>
+
+        <div class="nav-actions">
+            <!-- Botón de Modo Oscuro -->
+            <button id="theme-toggle" class="nav-item-btn" aria-label="Cambiar modo de pantalla">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button class="menu-toggle" id="menu-open-btn" aria-label="Abrir menú">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- CUERPO PRINCIPAL DEL PANEL -->
+    <div class="dashboard-layout">
+        <main>
+            <!-- Welcome Card (Nielsen #1: System Status) -->
+            <div class="welcome-card" style="padding: 2rem;">
+                <div style="width: 100%;">
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:1rem; margin-bottom:1.5rem; border-bottom:1px solid rgba(255,255,255,0.15); padding-bottom:1.25rem;">
+                        <div>
+                            <h2 style="font-size:1.75rem; color:#ffffff;">¡Hola de nuevo, <span id="user-display-name">Juan</span>!</h2>
+                            <p style="opacity:0.85; font-size:0.85rem; margin-top:0.25rem;">
+                                Legajo Académico: <strong style="letter-spacing:0.5px;">UNTREF-88432</strong> • Alumno Regular
+                            </p>
+                        </div>
+                        <span class="badge-status">En Cursada</span>
+                    </div>
+
+                    <!-- Datos Académicos y Personales Útiles (Gestalt: Proximidad) -->
+                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1.25rem; font-size:0.85rem; color:rgba(255,255,255,0.9); margin-bottom:1.5rem;">
+                        <div>
+                            <span style="opacity:0.65; display:block; font-size:0.7rem; text-transform:uppercase; font-weight:700;">Email Académico</span>
+                            <strong id="user-display-email-academic" style="font-size:0.9rem; font-family: monospace;">j.perez@untref.edu.ar</strong>
+                        </div>
+                        <div>
+                            <span style="opacity:0.65; display:block; font-size:0.7rem; text-transform:uppercase; font-weight:700;">Email Personal</span>
+                            <strong id="user-display-email-personal" style="font-size:0.9rem;">juan.perez@gmail.com</strong>
+                        </div>
+                        <div>
+                            <span style="opacity:0.65; display:block; font-size:0.7rem; text-transform:uppercase; font-weight:700;">Teléfono</span>
+                            <strong id="user-display-phone" style="font-size:0.9rem;">+54 (11) 4567-8910</strong>
+                        </div>
+                        <div>
+                            <span style="opacity:0.65; display:block; font-size:0.7rem; text-transform:uppercase; font-weight:700;">Fecha de Alta</span>
+                            <strong style="font-size:0.9rem;">Marzo 2026</strong>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-secondary btn-sm" style="color:white; border-color:rgba(255,255,255,0.4); background:rgba(255,255,255,0.1); font-size:0.75rem; padding:0.4rem 0.8rem;" onclick="abrirModalEditarDatos()"><i class="fas fa-edit"></i> Editar Información</button>
+                </div>
+            </div>
+
+
+
+            <!-- PROGRAMA ACTIVO (Gestalt: Cierre y Proximidad) -->
+            <section class="active-course-section" style="margin-top: 2rem;">
+                <h3><i class="fas fa-laptop-code"></i> Programa en Cursada Activa</h3>
+                <div class="panel-course-card">
+                    <div class="course-info-header">
+                        <div>
+                            <span class="course-badge badge-popular" id="track-categoria" style="font-size:0.65rem;">Posgrado</span>
+                            <h4 id="track-titulo" style="font-size: 1.25rem; margin: 0.5rem 0 0.25rem 0;">Especialización en Ciencia de Datos Aplicada</h4>
+                            <p id="track-resolucion" style="font-size: 0.75rem; color: var(--texto-secundario); font-weight: 500;">
+                                <i class="fas fa-certificate" style="color: var(--color-untref);"></i> Certificación Oficial — Res. Rectoral UNTREF Nº 1422/24
+                            </p>
+                            <p style="font-size: 0.8rem; color: var(--texto-muted); margin-top: 0.75rem;">
+                                <i class="far fa-calendar-check"></i> Próxima clase: Sábado 9:00 hs — Aula Virtual 3
+                            </p>
+                        </div>
+                        
+                        <!-- SVG Ring de Progreso -->
+                        <div class="progress-ring-box">
+                            <svg class="progress-ring" width="80" height="80">
+                                <circle stroke="var(--border-color)" stroke-width="6" fill="transparent" r="36" cx="40" cy="40"/>
+                                <circle class="progress-ring__circle" stroke="var(--color-tech)" stroke-width="6" stroke-linecap="round" fill="transparent" r="36" cx="40" cy="40"/>
+                            </svg>
+                            <div class="progress-text">35%</div>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+                        <div style="display:flex; gap:2rem;">
+                            <div style="display:flex; flex-direction:column;">
+                                <span style="font-size:0.7rem; color:var(--texto-muted); text-transform:uppercase;">Módulos</span>
+                                <strong style="font-size:1rem; color:var(--texto-principal);">1 de 4</strong>
+                            </div>
+                            <div style="display:flex; flex-direction:column;">
+                                <span style="font-size:0.7rem; color:var(--texto-muted); text-transform:uppercase;">Asistencia</span>
+                                <strong style="font-size:1rem; color:var(--texto-principal);">100%</strong>
+                            </div>
+                        </div>
+                        <a href="#" id="btn-aula-link" class="btn btn-primary"><i class="fas fa-external-link-alt"></i> Ingresar al Campus Virtual</a>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- COLUMNA DERECHA: DESCARGAS Y SOPORTE (Nielsen #10: Help and documentation) -->
+        <aside>
+            <div class="sidebar-box">
+                <h4>Centro de Descargas</h4>
+                <ul class="download-list">
+                    <li><a href="#"><i class="far fa-file-pdf" style="color:#ef4444;"></i> Certificado Alumno Regular</a></li>
+                    <li id="item-comprobante"><a href="#"><i class="far fa-file-alt" style="color:#3b82f6;"></i> Comprobante Pago Arancel</a></li>
+                    <li><a href="#"><i class="fas fa-receipt" style="color:#10b981;"></i> Programa Analítico Sellado</a></li>
+                </ul>
+            </div>
+
+            <div class="sidebar-box" style="background-color: var(--color-tech-light); border-color: var(--color-tech); text-align: center;">
+                <h4 style="border-bottom:none; margin-bottom: 0.5rem; color: var(--color-untref);">¿Necesitás soporte?</h4>
+                <p style="font-size: 0.75rem; color: var(--texto-secundario); margin-bottom: 1.25rem;">
+                    Contactá directamente con la Oficina de Alumnos y Soporte Académico.
+                </p>
+                <button class="btn btn-primary btn-sm btn-full" onclick="abrirModalSoporte()"><i class="far fa-envelope"></i> Enviar Mensaje</button>
+            </div>
+        </aside>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3 style="font-size: 1.2rem; color: var(--color-untref); margin-bottom: 1rem; font-weight: 800;">
+                    <i class="fas fa-graduation-cap"></i> UNTREF Virtual
+                </h3>
+                <p>Portal oficial de admisiones de la Universidad Virtual Tres de Febrero. Educación pública de calidad, accesible desde cualquier lugar del país.</p>
+                <div style="display:flex; gap:1rem; margin-top:1.25rem; font-size:1.1rem;">
+                    <a href="#" style="color:var(--texto-muted);"><i class="fab fa-facebook"></i></a>
+                    <a href="#" style="color:var(--texto-muted);"><i class="fab fa-instagram"></i></a>
+                    <a href="#" style="color:var(--texto-muted);"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h4>Contacto y Soporte</h4>
+                <p style="margin-bottom:0.75rem;"><i class="far fa-envelope"></i> admisiones@untref.edu.ar</p>
+                <p style="margin-bottom:0.75rem;"><i class="fas fa-phone-alt"></i> +54 (11) 4734-2200</p>
+                <p><i class="far fa-clock"></i> Lunes a Viernes de 9:00 a 18:00 hs</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            UNTREF Virtual © 2026 • Universidad Virtual Tres de Febrero • Todos los derechos reservados.
+        </div>
+    </footer>
+
+    <!-- MODAL EDITAR DATOS (Nielsen #3, #5) -->
+    <div class="modal-overlay" id="editProfileModal">
+        <div class="modal-card" style="text-align:left; max-width:440px;">
+            <h3 style="font-size:1.25rem; font-weight:800; margin-bottom:0.5rem; color:var(--texto-principal);"><i class="fas fa-user-cog"></i> Editar Datos de Alumno</h3>
+            <p style="font-size:0.8rem; color:var(--texto-secundario); margin-bottom:1.5rem;">Modificá tus datos de contacto registrados en el legajo digital.</p>
+            
+            <form onsubmit="guardarDatosPerfil(event)">
+                <div class="form-group">
+                    <label for="edit-name">Nombre y Apellido</label>
+                    <input type="text" id="edit-name" required placeholder="Juan Pérez">
+                </div>
+                <div class="form-group">
+                    <label for="edit-email-personal">Email Personal</label>
+                    <input type="email" id="edit-email-personal" required placeholder="ejemplo@correo.com">
+                </div>
+                <div class="form-group">
+                    <label for="edit-phone">Teléfono</label>
+                    <input type="text" id="edit-phone" required placeholder="+54 (11) 4567-8910">
+                </div>
+                
+                <div style="display:flex; gap:1rem; margin-top:1.5rem; justify-content:flex-end;">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="cerrarModalEditarDatos()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary btn-sm">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL SOPORTE / ENVIAR MENSAJE (Nielsen #1, #3) -->
+    <div class="modal-overlay" id="supportModal">
+        <div class="modal-card" style="text-align:left; max-width:460px;">
+            <h3 style="font-size:1.25rem; font-weight:800; margin-bottom:0.5rem; color:var(--texto-principal);"><i class="far fa-paper-plane"></i> Enviar Mensaje a Soporte</h3>
+            <p style="font-size:0.8rem; color:var(--texto-secundario); margin-bottom:1.5rem;">Describí tu consulta académica o técnica. Te responderemos en un plazo máximo de 24 horas hábiles.</p>
+            
+            <form onsubmit="enviarMensajeSoporte(event)">
+                <div class="form-group">
+                    <label for="support-subject">Asunto</label>
+                    <input type="text" id="support-subject" required placeholder="Ej: Problema con la descarga de certificados">
+                </div>
+                <div class="form-group">
+                    <label for="support-message">Mensaje / Consulta</label>
+                    <textarea id="support-message" required placeholder="Escribí aquí tu consulta detallada..." style="width:100%; min-height:120px; padding:0.75rem; border:1.5px solid var(--border-color); border-radius:var(--radius-sm); font-family:inherit; font-size:0.85rem; background-color:var(--fondo-principal); color:var(--texto-principal); resize:vertical;"></textarea>
+                </div>
+                
+                <div style="display:flex; gap:1rem; margin-top:1.5rem; justify-content:flex-end;">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="cerrarModalSoporte()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary btn-sm">Enviar Consulta</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- LOGIC SCRIPTS -->
+    <script src="../js/cursos.js"></script>
+    <script src="../js/main.js"></script>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const cursoActivoKey = params.get('curso') || 'datos';
+        const cursoActivo = CAT_CURSOS[cursoActivoKey];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Verificar sesión activa
+            const storedName = localStorage.getItem("untref_user_name");
+            if (!storedName) {
+                // Redirigir a iniciar sesión
+                window.location.href = "iniciar-sesion.html?next=perfil.html";
+                return;
+            }
+            document.getElementById('user-display-name').innerText = storedName;
+
+            // Generar email académico dinámicamente a partir del nombre
+            const cleanParts = storedName.trim().toLowerCase().split(/\s+/);
+            const emailAcad = cleanParts.length > 1 ? `${cleanParts[0][0]}.${cleanParts[1]}@untref.edu.ar` : `${cleanParts[0]}@untref.edu.ar`;
+            document.getElementById('user-display-email-academic').innerText = emailAcad;
+
+            // Cargar datos personales de contacto
+            const storedEmailPers = localStorage.getItem("untref_user_email_personal") || "juan.perez@gmail.com";
+            const storedPhone = localStorage.getItem("untref_user_phone") || "+54 (11) 4567-8910";
+            document.getElementById('user-display-email-personal').innerText = storedEmailPers;
+            document.getElementById('user-display-phone').innerText = storedPhone;
+
+            // Inyectar datos de cursada activa
+            if (cursoActivo) {
+                document.getElementById('track-titulo').innerText = cursoActivo.titulo;
+                document.getElementById('track-categoria').innerText = cursoActivo.cat;
+                
+                // Configurar enlace del campus virtual
+                document.getElementById('btn-aula-link').href = `aula-virtual.html?curso=${cursoActivoKey}`;
+
+                // Si el curso es gratuito (ux), ocultar descarga de comprobante de pago
+                if (cursoActivo.gratis) {
+                    const comprobante = document.getElementById('item-comprobante');
+                    if (comprobante) comprobante.style.display = 'none';
+                }
+            }
+
+            // Animación del progress ring SVG
+            const circle = document.querySelector('.progress-ring__circle');
+            if (circle) {
+                const radius = circle.r.baseVal.value;
+                const circumference = 2 * Math.PI * radius;
+                circle.style.strokeDasharray = `${circumference}`;
+                
+                // 35% de progreso (simulado)
+                const offset = circumference - (35 / 100) * circumference;
+                setTimeout(() => {
+                    circle.style.strokeDashoffset = offset;
+                }, 100);
+            }
+
+            // Desmatricular del carrito el curso comprado actualmente para mantener la pureza del carrito
+            eliminarDelCarrito(cursoActivoKey);
+        });
+
+        function abrirModalEditarDatos() {
+            const currentName = document.getElementById('user-display-name').innerText;
+            const currentEmail = document.getElementById('user-display-email-personal').innerText;
+            const currentPhone = document.getElementById('user-display-phone').innerText;
+            
+            document.getElementById('edit-name').value = currentName;
+            document.getElementById('edit-email-personal').value = currentEmail;
+            document.getElementById('edit-phone').value = currentPhone;
+            
+            document.getElementById('editProfileModal').classList.add('active');
+        }
+
+        function cerrarModalEditarDatos() {
+            document.getElementById('editProfileModal').classList.remove('active');
+        }
+
+        function guardarDatosPerfil(event) {
+            event.preventDefault();
+            const nuevoNombre = document.getElementById('edit-name').value.trim();
+            const nuevoEmail = document.getElementById('edit-email-personal').value.trim();
+            const nuevoPhone = document.getElementById('edit-phone').value.trim();
+            
+            if (nuevoNombre && nuevoEmail && nuevoPhone) {
+                // Guardar en localStorage
+                localStorage.setItem("untref_user_name", nuevoNombre);
+                localStorage.setItem("untref_user_email_personal", nuevoEmail);
+                localStorage.setItem("untref_user_phone", nuevoPhone);
+                
+                // Actualizar la interfaz
+                document.getElementById('user-display-name').innerText = nuevoNombre;
+                document.getElementById('user-display-email-personal').innerText = nuevoEmail;
+                document.getElementById('user-display-phone').innerText = nuevoPhone;
+                
+                // Regenerar email académico dinámicamente
+                const cleanParts = nuevoNombre.toLowerCase().split(/\s+/);
+                const emailAcad = cleanParts.length > 1 ? `${cleanParts[0][0]}.${cleanParts[1]}@untref.edu.ar` : `${cleanParts[0]}@untref.edu.ar`;
+                document.getElementById('user-display-email-academic').innerText = emailAcad;
+
+                // Actualizar el indicador del navbar si existe
+                const navUserNameSpan = document.querySelector('.profile-dropdown-trigger span');
+                if (navUserNameSpan) {
+                    navUserNameSpan.innerText = nuevoNombre;
+                }
+                
+                cerrarModalEditarDatos();
+                alert("Datos de contacto actualizados con éxito en el legajo.");
+            }
+        }
+
+        function abrirModalSoporte() {
+            document.getElementById('support-subject').value = '';
+            document.getElementById('support-message').value = '';
+            document.getElementById('supportModal').classList.add('active');
+        }
+
+        function cerrarModalSoporte() {
+            document.getElementById('supportModal').classList.remove('active');
+        }
+
+        function enviarMensajeSoporte(event) {
+            event.preventDefault();
+            const subject = document.getElementById('support-subject').value.trim();
+            const msg = document.getElementById('support-message').value.trim();
+            
+            if (subject && msg) {
+                alert(`¡Mensaje de soporte enviado con éxito!\n\nAsunto: ${subject}\n\nEl equipo técnico revisará tu consulta académica y te responderá en las próximas 24 horas.`);
+                cerrarModalSoporte();
+            }
+        }
+    </script>
+</body>
+</html>

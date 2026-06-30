@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNTREF | Programa Académico</title>
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .details-layout {
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .syllabus-box {
+            background-color: var(--fondo-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            margin-top: 1.5rem;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .syllabus-item {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .syllabus-item:last-child {
+            border-bottom: none;
+        }
+
+        .syllabus-number {
+            background-color: var(--color-tech-light);
+            color: var(--color-untref);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .syllabus-content h4 {
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .sticky-sidebar {
+            position: sticky;
+            top: 6rem;
+            height: fit-content;
+        }
+
+        .sticky-card {
+            background-color: var(--fondo-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .info-row:last-of-type {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: var(--texto-secundario);
+            font-weight: 600;
+        }
+
+        .info-val {
+            font-weight: 700;
+            color: var(--texto-principal);
+        }
+
+        @media (max-width: 900px) {
+            .details-layout {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAV BAR (Nielsen #1, #3 y #4) -->
+    <nav class="navbar">
+        <a href="../index.html" class="logo-untref">
+            <i class="fas fa-graduation-cap"></i> UNTREF <span>| Formación</span>
+        </a>
+
+        <div class="nav-menu" id="nav-menu">
+            <button class="menu-close" id="menu-close-btn" aria-label="Cerrar menú">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <a href="../index.html" class="nav-item"><i class="fas fa-arrow-left"></i> Volver al Catálogo</a>
+            <a href="aula-virtual.html" class="nav-item"><i class="fas fa-laptop-code"></i> Aula Virtual</a>
+            
+            <!-- Carrito con indicador dinámico -->
+            <div class="cart-icon-wrapper nav-item" onclick="window.location.href='carrito.html'">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Carrito</span>
+                <span class="cart-badge" style="display: none;">0</span>
+            </div>
+
+            <a href="perfil.html" class="nav-item"><i class="fas fa-user-circle"></i> Mi Perfil</a>
+        </div>
+
+        <div class="nav-actions">
+            <!-- Botón de Modo Oscuro -->
+            <button id="theme-toggle" class="nav-item-btn" aria-label="Cambiar modo de pantalla">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button class="menu-toggle" id="menu-open-btn" aria-label="Abrir menú">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- DETALLE DEL PROGRAMA -->
+    <div class="details-layout">
+        <main>
+            <!-- Breadcrumbs (Gestalt: Continuidad) -->
+            <div class="breadcrumb">
+                <a href="../index.html">Catálogo</a>
+                <span><i class="fas fa-chevron-right" style="font-size:0.6rem;"></i></span>
+                <span id="breadcrumb-categoria">Categoría</span>
+                <span><i class="fas fa-chevron-right" style="font-size:0.6rem;"></i></span>
+                <span id="breadcrumb-titulo" style="color: var(--texto-principal);">Nombre del Curso</span>
+            </div>
+
+            <div style="margin-bottom: 2rem;">
+                <span id="det-badge-container"></span>
+                <h1 id="det-titulo" style="font-size: 2.25rem; margin: 0.75rem 0 1.25rem 0;"></h1>
+                <p id="det-descripcion" style="font-size: 1.05rem; color: var(--texto-secundario); line-height: 1.6;"></p>
+            </div>
+
+            <!-- Plan de estudios -->
+            <h3 style="font-size: 1.35rem; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem;"><i class="fas fa-list-ol"></i> Plan de Estudios</h3>
+            <div id="det-temario" class="syllabus-box">
+                <!-- Inyectado dinámicamente -->
+            </div>
+        </main>
+
+        <!-- COLUMNA ARANCEL Y ACCIÓN (Nielsen #6: Reconocimiento) -->
+        <aside class="sticky-sidebar">
+            <div class="sticky-card">
+                <div>
+                    <span style="font-size: 0.8rem; font-weight: 700; color: var(--texto-muted); text-transform: uppercase;">Arancel</span>
+                    <h2 id="det-precio" style="font-size: 2rem; color: var(--color-untref); margin-top: 0.25rem;"></h2>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <div class="info-row">
+                        <span class="info-label"><i class="far fa-calendar-alt"></i> Duración</span>
+                        <span class="info-val" id="det-duracion"></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label"><i class="fas fa-laptop"></i> Modalidad</span>
+                        <span class="info-val" id="det-modalidad"></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label"><i class="fas fa-award"></i> Certificado</span>
+                        <span class="info-val">Oficial UNTREF</span>
+                    </div>
+                </div>
+
+                <!-- Botones de Acción (Nielsen #3: Control de Usuario) -->
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <a href="#" id="btn-inscribirse" class="btn btn-primary btn-full"><i class="fas fa-pen-nib"></i> Iniciar Inscripción</a>
+                    <button id="btn-cart-toggle" class="btn btn-secondary btn-full" onclick="toggleCart()"><i class="fas fa-cart-plus"></i> Agregar al Carrito</button>
+                </div>
+
+                <div style="font-size: 0.75rem; color: var(--texto-muted); text-align: center; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+                    <i class="fas fa-shield-alt"></i> Admisión regulada por legajo temporal institucional.
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3 style="font-size: 1.2rem; color: var(--color-untref); margin-bottom: 1rem; font-weight: 800;">
+                    <i class="fas fa-graduation-cap"></i> UNTREF Virtual
+                </h3>
+                <p>Portal oficial de admisiones de la Universidad Virtual Tres de Febrero. Educación pública de calidad, accesible desde cualquier lugar del país.</p>
+                <div style="display:flex; gap:1rem; margin-top:1.25rem; font-size:1.1rem;">
+                    <a href="#" style="color:var(--texto-muted);"><i class="fab fa-facebook"></i></a>
+                    <a href="#" style="color:var(--texto-muted);"><i class="fab fa-instagram"></i></a>
+                    <a href="#" style="color:var(--texto-muted);"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h4>Contacto y Soporte</h4>
+                <p style="margin-bottom:0.75rem;"><i class="far fa-envelope"></i> admisiones@untref.edu.ar</p>
+                <p style="margin-bottom:0.75rem;"><i class="fas fa-phone-alt"></i> +54 (11) 4734-2200</p>
+                <p><i class="far fa-clock"></i> Lunes a Viernes de 9:00 a 18:00 hs</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            UNTREF Virtual © 2026 • Universidad Virtual Tres de Febrero • Todos los derechos reservados.
+        </div>
+    </footer>
+
+    <!-- LOGIC SCRIPTS -->
+    <script src="../js/cursos.js"></script>
+    <script src="../js/main.js"></script>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('curso') || 'datos';
+        const curso = CAT_CURSOS[id];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (curso) {
+                // Títulos e Info
+                document.title = `${curso.titulo} | UNTREF`;
+                document.getElementById('breadcrumb-titulo').innerText = curso.titulo;
+                document.getElementById('breadcrumb-categoria').innerText = curso.cat;
+                document.getElementById('det-titulo').innerText = curso.titulo;
+                document.getElementById('det-descripcion').innerText = curso.desc;
+                document.getElementById('det-precio').innerText = curso.precio;
+                document.getElementById('det-duracion').innerText = curso.duracion;
+                document.getElementById('det-modalidad').innerText = curso.modalidad;
+                
+                // Badges
+                const badgeContainer = document.getElementById('det-badge-container');
+                if (curso.badge === 'popular') {
+                    badgeContainer.innerHTML = `<span class="course-badge badge-popular" style="font-size:0.8rem;"><i class="fas fa-fire"></i> Recomendado por Alumnos</span>`;
+                } else if (curso.badge === 'gratis') {
+                    badgeContainer.innerHTML = `<span class="course-badge badge-gratis" style="font-size:0.8rem;"><i class="fas fa-gift"></i> Ingreso Directo Sin Costo</span>`;
+                }
+
+                // Inyectar temario modular (Gestalt: Proximidad)
+                const temarioContainer = document.getElementById('det-temario');
+                temarioContainer.innerHTML = curso.temario.map((m, index) => {
+                    const partes = m.split(':');
+                    const moduloNum = partes[0] || `Módulo ${index+1}`;
+                    const moduloTitulo = partes[1] || m;
+                    return `
+                        <div class="syllabus-item">
+                            <div class="syllabus-number">${index + 1}</div>
+                            <div class="syllabus-content">
+                                <h4 style="font-weight: 700; color: var(--texto-principal);">${moduloNum}</h4>
+                                <p style="font-size: 0.85rem; color: var(--texto-secundario);">${moduloTitulo.trim()}</p>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                // Configurar enlace de inscripción directa con verificación de sesión
+                const user = localStorage.getItem("untref_user_name");
+                const btnInscribirse = document.getElementById('btn-inscribirse');
+                if (!user) {
+                    btnInscribirse.href = `iniciar-sesion.html?next=inscripcion.html?curso=${id}`;
+                } else {
+                    btnInscribirse.href = `inscripcion.html?curso=${id}`;
+                }
+                
+                // Actualizar estado del botón de carrito
+                actualizarBotonCarrito();
+            }
+        });
+
+        function toggleCart() {
+            const carrito = obtenerCarrito();
+            const btn = document.getElementById('btn-cart-toggle');
+            if (carrito.includes(id)) {
+                eliminarDelCarrito(id);
+                btn.innerHTML = `<i class="fas fa-cart-plus"></i> Agregar al Carrito`;
+                btn.className = "btn btn-secondary btn-full";
+            } else {
+                agregarAlCarrito(id);
+                btn.innerHTML = `<i class="fas fa-check"></i> En el Carrito`;
+                btn.className = "btn btn-success btn-full";
+            }
+            actualizarBadgeCarrito();
+        }
+
+        function actualizarBotonCarrito() {
+            const carrito = obtenerCarrito();
+            const btn = document.getElementById('btn-cart-toggle');
+            if (btn) {
+                if (carrito.includes(id)) {
+                    btn.innerHTML = `<i class="fas fa-check"></i> En el Carrito`;
+                    btn.className = "btn btn-success btn-full";
+                } else {
+                    btn.innerHTML = `<i class="fas fa-cart-plus"></i> Agregar al Carrito`;
+                    btn.className = "btn btn-secondary btn-full";
+                }
+            }
+        }
+    </script>
+</body>
+</html>

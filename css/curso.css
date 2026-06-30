@@ -1,0 +1,44 @@
+/* Layout del Detalle */
+.curso-layout {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 3rem;
+  max-width: 1200px;
+  margin: 2rem auto;
+}
+
+/* Acordeón para Módulos */
+.syllabus-item {
+  background: var(--white);
+  border: 1px solid var(--grey-200);
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  overflow: hidden;
+}
+
+.syllabus-header {
+  padding: 1rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+  background: #f8fafc;
+}
+
+.syllabus-content {
+  padding: 1rem;
+  display: none; /* Oculto por defecto */
+  border-top: 1px solid var(--grey-200);
+  color: var(--grey-500);
+}
+
+/* Sticky Sidebar */
+.sticky-card {
+  position: sticky;
+  top: 2rem;
+  background: var(--white);
+  padding: 2rem;
+  border-radius: 16px;
+  border: 1px solid var(--grey-200);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}

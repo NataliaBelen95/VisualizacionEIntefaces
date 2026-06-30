@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNTREF | Iniciar Sesión</title>
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .login-layout {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 160px);
+            padding: 2rem;
+            background-color: var(--fondo-principal);
+        }
+
+        .login-card {
+            background-color: var(--fondo-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 440px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+
+        .login-tabs {
+            display: flex;
+            border-bottom: 1.5px solid var(--border-color);
+            background-color: var(--fondo-navbar);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 1.25rem;
+            text-align: center;
+            background: none;
+            border: none;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--texto-secundario);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .tab-btn.active {
+            color: var(--color-untref);
+            border-bottom: 3px solid var(--color-untref);
+            margin-bottom: -1.5px;
+        }
+
+        .login-form-container {
+            padding: 2.5rem;
+        }
+
+        .form-title {
+            font-size: 1.35rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            color: var(--texto-principal);
+        }
+
+        .form-subtitle {
+            font-size: 0.8rem;
+            color: var(--texto-secundario);
+            margin-bottom: 2rem;
+        }
+
+        .login-form-block {
+            display: none;
+        }
+
+        .login-form-block.active {
+            display: block;
+        }
+
+        .forgot-pass {
+            display: block;
+            text-align: right;
+            font-size: 0.75rem;
+            color: var(--texto-muted);
+            margin-top: -0.75rem;
+            margin-bottom: 1.5rem;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .forgot-pass:hover {
+            color: var(--color-untref);
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAV BAR -->
+    <nav class="navbar">
+        <a href="../index.html" class="logo-untref">
+            <i class="fas fa-graduation-cap"></i> UNTREF <span>| Formación</span>
+        </a>
+        <div class="nav-menu" id="nav-menu">
+            <a href="../index.html" class="nav-item"><i class="fas fa-arrow-left"></i> Volver al Catálogo</a>
+        </div>
+        <div class="nav-actions">
+            <!-- Botón de Modo Oscuro -->
+            <button id="theme-toggle" class="nav-item-btn" aria-label="Cambiar modo de pantalla">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- FORMULARIO DE ACCESO -->
+    <div class="login-layout">
+        <div class="login-card">
+            <div class="login-tabs">
+                <button class="tab-btn active" id="tab-login" onclick="toggleFormTab('login')">Ingresar</button>
+                <button class="tab-btn" id="tab-register" onclick="toggleFormTab('register')">Crear Cuenta</button>
+            </div>
+
+            <div class="login-form-container">
+                
+                <!-- BLOCK: INICIAR SESIÓN -->
+                <div class="login-form-block active" id="block-login">
+                    <h3 class="form-title">¡Qué bueno verte!</h3>
+                    <p class="form-subtitle">Ingresá tus credenciales académicas para continuar.</p>
+                    
+                    <form id="form-login-action" onsubmit="handleLoginSubmit(event)">
+                        <div class="form-group">
+                            <label for="login-email">Correo Electrónico</label>
+                            <input type="email" id="login-email" required placeholder="ejemplo@untref.edu.ar">
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">Contraseña</label>
+                            <input type="password" id="login-password" required placeholder="••••••••">
+                        </div>
+                        
+                        <a href="#" class="forgot-pass" onclick="alert('Funcionalidad de recuperación de contraseña simulada. Se envió un correo de restablecimiento.'); return false;">¿Olvidaste tu contraseña?</a>
+                        
+                        <button type="submit" class="btn btn-primary btn-full" style="padding: 0.9rem;">
+                            Iniciar Sesión <i class="fas fa-sign-in-alt" style="margin-left: 0.5rem;"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- BLOCK: REGISTRARSE -->
+                <div class="login-form-block" id="block-register">
+                    <h3 class="form-title">Unite a UNTREF</h3>
+                    <p class="form-subtitle">Completá el formulario para iniciar tu legajo digital.</p>
+                    
+                    <form id="form-register-action" onsubmit="handleRegisterSubmit(event)">
+                        <div class="form-group">
+                            <label for="reg-name">Nombre y Apellido</label>
+                            <input type="text" id="reg-name" required placeholder="Juan Pérez">
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-email">Correo Electrónico</label>
+                            <input type="email" id="reg-email" required placeholder="ejemplo@correo.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-password">Contraseña</label>
+                            <input type="password" id="reg-password" required placeholder="Mínimo 6 caracteres" minlength="6">
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-full" style="padding: 0.9rem; margin-top: 1rem;">
+                            Siguiente Paso <i class="fas fa-chevron-right" style="margin-left: 0.5rem;"></i>
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3 style="font-size: 1.2rem; color: var(--color-untref); margin-bottom: 1rem; font-weight: 800;">
+                    <i class="fas fa-graduation-cap"></i> UNTREF Virtual
+                </h3>
+                <p>Portal oficial de admisiones de la Universidad Virtual Tres de Febrero. Educación pública de calidad, accesible desde cualquier lugar del país.</p>
+                <div style="display:flex; gap:1rem; margin-top:1.25rem; font-size:1.1rem;">
+                    <a href="#" style="color:var(--texto-muted);"><i class="fab fa-facebook"></i></a>
+                    <a href="#" style="color:var(--texto-muted);"><i class="fab fa-instagram"></i></a>
+                    <a href="#" style="color:var(--texto-muted);"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h4>Contacto y Soporte</h4>
+                <p style="margin-bottom:0.75rem;"><i class="far fa-envelope"></i> admisiones@untref.edu.ar</p>
+                <p style="margin-bottom:0.75rem;"><i class="fas fa-phone-alt"></i> +54 (11) 4734-2200</p>
+                <p><i class="far fa-clock"></i> Lunes a Viernes de 9:00 a 18:00 hs</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            UNTREF Virtual © 2026 • Universidad Virtual Tres de Febrero • Todos los derechos reservados.
+        </div>
+    </footer>
+
+    <!-- LOGIC SCRIPTS -->
+    <script src="../js/main.js"></script>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const nextUrl = params.get('next') || '../index.html';
+
+        function toggleFormTab(tab) {
+            const tabLogin = document.getElementById('tab-login');
+            const tabRegister = document.getElementById('tab-register');
+            const blockLogin = document.getElementById('block-login');
+            const blockRegister = document.getElementById('block-register');
+
+            if (tab === 'login') {
+                tabLogin.classList.add('active');
+                tabRegister.classList.remove('active');
+                blockLogin.classList.add('active');
+                blockRegister.classList.remove('active');
+            } else {
+                tabRegister.classList.add('active');
+                tabLogin.classList.remove('active');
+                blockRegister.classList.add('active');
+                blockLogin.classList.remove('active');
+            }
+        }
+
+        function autocompletarDemo() {
+            document.getElementById('login-email').value = 'j.perez@untref.edu.ar';
+            document.getElementById('login-password').value = '123456';
+        }
+
+        function handleLoginSubmit(event) {
+            event.preventDefault();
+            const email = document.getElementById('login-email').value.trim();
+            
+            let userName = "Juan Pérez";
+            let personalEmail = "juan.perez@gmail.com";
+            let phone = "+54 (11) 4567-8910";
+
+            if (email !== 'j.perez@untref.edu.ar') {
+                // Si escriben otra dirección, deducir nombre de forma inteligente
+                const parts = email.split('@')[0].split('.');
+                userName = parts.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
+                personalEmail = email;
+                phone = "+54 (11) 9876-5432";
+            }
+            
+            localStorage.setItem("untref_user_name", userName);
+            localStorage.setItem("untref_user_email_personal", personalEmail);
+            localStorage.setItem("untref_user_phone", phone);
+            
+            // Redirigir al siguiente paso
+            window.location.href = nextUrl;
+        }
+
+        function handleRegisterSubmit(event) {
+            event.preventDefault();
+            const name = document.getElementById('reg-name').value;
+            const email = document.getElementById('reg-email').value;
+            
+            // Guardar nombre de forma provisional
+            localStorage.setItem("untref_temp_register_name", name);
+            
+            // Redirigir a verificación de mail
+            window.location.href = `confirmar-correo.html?email=${encodeURIComponent(email)}&next=${encodeURIComponent(nextUrl)}`;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNTREF | Carrito de Admisión</title>
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .cart-layout {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            align-items: start;
+        }
+
+        .cart-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .cart-title span {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--texto-muted);
+        }
+
+        .cart-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .cart-card-item {
+            background-color: var(--fondo-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+        }
+
+        .cart-card-item:hover {
+            box-shadow: var(--shadow);
+            border-color: var(--color-untref);
+        }
+
+        .cart-item-icon-box {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            color: #ffffff;
+            flex-shrink: 0;
+        }
+
+        .icon-datos {
+            background: linear-gradient(135deg, var(--color-untref) 0%, #1e40af 100%);
+        }
+
+        .icon-salud {
+            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+        }
+
+        .icon-ux {
+            background: linear-gradient(135deg, #a259ff 0%, #7c3aed 100%);
+        }
+
+        .cart-item-info {
+            flex-grow: 1;
+        }
+
+        .cart-item-info h4 {
+            font-size: 1.05rem;
+            margin-bottom: 0.25rem;
+            line-height: 1.3;
+        }
+
+        .cart-item-details {
+            font-size: 0.8rem;
+            color: var(--texto-secundario);
+            margin-bottom: 0.25rem;
+        }
+
+        .cart-item-stars {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.75rem;
+            color: var(--color-warning);
+        }
+
+        .cart-item-stars span {
+            color: var(--texto-muted);
+            margin-left: 0.25rem;
+        }
+
+        .cart-item-price-box {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .cart-item-price {
+            font-size: 1.15rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .cart-item-delete {
+            background: none;
+            border: none;
+            color: var(--texto-muted);
+            cursor: pointer;
+            font-size: 1.15rem;
+            padding: 0.25rem;
+            transition: var(--transition);
+        }
+
+        .cart-item-delete:hover {
+            color: var(--color-danger);
+        }
+
+        .summary-box {
+            background-color: var(--fondo-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+            color: var(--texto-secundario);
+        }
+
+        .summary-row.total {
+            border-top: 1px solid var(--border-color);
+            padding-top: 1rem;
+            margin-top: 1rem;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--texto-principal);
+        }
+
+        .trust-badge-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 1rem;
+        }
+
+        .trust-badge-item {
+            text-align: center;
+            font-size: 0.65rem;
+            color: var(--texto-muted);
+            font-weight: 500;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .trust-badge-item i {
+            font-size: 1.1rem;
+            color: var(--color-tech);
+        }
+
+        .empty-cart-view {
+            border: 2px dashed var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 4rem 2rem;
+            text-align: center;
+            color: var(--texto-secundario);
+            grid-column: 1 / -1;
+            background-color: var(--fondo-card);
+            box-shadow: var(--shadow-sm);
+        }
+
+        @media (max-width: 900px) {
+            .cart-layout {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .cart-card-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .cart-item-price-box {
+                width: 100%;
+                justify-content: space-between;
+                border-top: 1px solid var(--border-color);
+                padding-top: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAV BAR (Nielsen #1, #3 y #4) -->
+    <nav class="navbar">
+        <a href="../index.html" class="logo-untref">
+            <i class="fas fa-graduation-cap"></i> UNTREF <span>| Formación</span>
+        </a>
+
+        <div class="nav-menu" id="nav-menu">
+            <button class="menu-close" id="menu-close-btn" aria-label="Cerrar menú">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <a href="../index.html" class="nav-item"><i class="fas fa-search-plus"></i> Catálogo</a>
+            <a href="aula-virtual.html" class="nav-item"><i class="fas fa-laptop-code"></i> Aula Virtual</a>
+            
+            <!-- Carrito con indicador dinámico -->
+            <div class="cart-icon-wrapper nav-item">
+                <i class="fas fa-shopping-cart" style="color:var(--color-untref);"></i>
+                <span style="color:var(--color-untref);">Carrito</span>
+                <span class="cart-badge" style="display: none;">0</span>
+            </div>
+
+            <a href="perfil.html" class="nav-item"><i class="fas fa-user-circle"></i> Mi Perfil</a>
+        </div>
+
+        <div class="nav-actions">
+            <!-- Botón de Modo Oscuro -->
+            <button id="theme-toggle" class="nav-item-btn" aria-label="Cambiar modo de pantalla">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button class="menu-toggle" id="menu-open-btn" aria-label="Abrir menú">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- CARRO DE COMPRAS CONTENEDOR -->
+    <div class="cart-layout" id="cart-layout-container">
+        
+        <!-- Listado de Cursos a la izquierda -->
+        <main>
+            <h2 class="cart-title"><i class="fas fa-shopping-cart"></i> Tu Carrito <span id="cart-items-count">0 carreras</span></h2>
+            
+            <div class="cart-list" id="cart-list-container">
+                <!-- Inyectado dinámicamente -->
+            </div>
+
+            <div style="margin-top: 2rem;">
+                <a href="../index.html" class="btn btn-secondary btn-sm"><i class="fas fa-arrow-left"></i> Seguir explorando</a>
+            </div>
+        </main>
+
+        <!-- Resumen de Cobro a la derecha (Nielsen #6) -->
+        <aside id="cart-sidebar">
+            <div class="summary-box">
+                <h3 style="font-size: 1.15rem; margin-bottom: 1.25rem;"><i class="fas fa-file-invoice-dollar"></i> Resumen</h3>
+                
+                <div style="display:flex; flex-direction:column; gap:0.25rem;">
+                    <div class="summary-row">
+                        <span id="summary-items-label">Subtotal (0 programas)</span>
+                        <strong id="summary-subtotal" style="color:var(--texto-principal);">$0</strong>
+                    </div>
+                    <div class="summary-row" style="color: var(--color-success); display: none;" id="discount-row">
+                        <span>🏷️ Bonificación (10%)</span>
+                        <strong id="summary-discount">- $0</strong>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total</span>
+                        <span id="summary-total" style="color:var(--color-untref);">$0</span>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary btn-full" style="padding: 1rem; margin-top: 1.5rem; font-size: 0.95rem;" id="btn-proceed-checkout" onclick="procederAlPago()">
+                    Proceder a la Inscripción <i class="fas fa-arrow-right" style="margin-left: 0.5rem;"></i>
+                </button>
+
+                <!-- Trust Badges (Gestalt: Proximidad, Similitud) -->
+                <div class="trust-badge-row">
+                    <div class="trust-badge-item">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Pago Seguro</span>
+                    </div>
+                    <div class="trust-badge-item">
+                        <i class="fas fa-history"></i>
+                        <span>Acceso 24/7</span>
+                    </div>
+                    <div class="trust-badge-item">
+                        <i class="fas fa-award"></i>
+                        <span>Certificado</span>
+                    </div>
+                    <div class="trust-badge-item">
+                        <i class="fas fa-headset"></i>
+                        <span>Soporte</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3 style="font-size: 1.2rem; color: var(--color-untref); margin-bottom: 1rem; font-weight: 800;">
+                    <i class="fas fa-graduation-cap"></i> UNTREF Virtual
+                </h3>
+                <p>Portal oficial de admisiones de la Universidad Virtual Tres de Febrero. Educación pública de calidad, accesible desde cualquier lugar del país.</p>
+                <div style="display:flex; gap:1rem; margin-top:1.25rem; font-size:1.1rem;">
+                    <a href="#" style="color:var(--texto-muted);"><i class="fab fa-facebook"></i></a>
+                    <a href="#" style="color:var(--texto-muted);"><i class="fab fa-instagram"></i></a>
+                    <a href="#" style="color:var(--texto-muted);"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h4>Contacto y Soporte</h4>
+                <p style="margin-bottom:0.75rem;"><i class="far fa-envelope"></i> admisiones@untref.edu.ar</p>
+                <p style="margin-bottom:0.75rem;"><i class="fas fa-phone-alt"></i> +54 (11) 4734-2200</p>
+                <p><i class="far fa-clock"></i> Lunes a Viernes de 9:00 a 18:00 hs</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            UNTREF Virtual © 2026 • Universidad Virtual Tres de Febrero • Todos los derechos reservados.
+        </div>
+    </footer>
+
+    <!-- LOGIC SCRIPTS -->
+    <script src="../js/cursos.js"></script>
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            renderizarCarritoCompleto();
+        });
+
+        function renderizarCarritoCompleto() {
+            const listContainer = document.getElementById('cart-list-container');
+            const cartItemsCount = document.getElementById('cart-items-count');
+            const summaryItemsLabel = document.getElementById('summary-items-label');
+            const summarySubtotal = document.getElementById('summary-subtotal');
+            const summaryDiscount = document.getElementById('summary-discount');
+            const discountRow = document.getElementById('discount-row');
+            const summaryTotal = document.getElementById('summary-total');
+            const cartLayout = document.getElementById('cart-layout-container');
+
+            const cart = obtenerCarrito();
+
+            // Sincronizar badges e indicadores
+            cartItemsCount.innerText = `${cart.length} ${cart.length === 1 ? 'programa' : 'programas'}`;
+            summaryItemsLabel.innerText = `Subtotal (${cart.length} ${cart.length === 1 ? 'programa' : 'programas'})`;
+
+            if (cart.length === 0) {
+                // Layout vacío (Nielsen #3: Control de Usuario)
+                cartLayout.innerHTML = `
+                    <div class="empty-cart-view">
+                        <i class="fas fa-shopping-basket" style="font-size: 4rem; color: var(--texto-muted); margin-bottom: 1.5rem; display:block;"></i>
+                        <h2 style="margin-bottom: 0.5rem; font-size: 1.5rem;">Tu carrito está vacío</h2>
+                        <p style="color: var(--texto-secundario); font-size: 0.95rem; margin-bottom: 2rem;">Navegá por el catálogo de la universidad para agregar las carreras de tu interés.</p>
+                        <a href="../index.html" class="btn btn-primary"><i class="fas fa-arrow-left"></i> Volver al Catálogo</a>
+                    </div>
+                `;
+                return;
+            }
+
+            const estrellasCurso = { datos: "★★★★★", salud: "★★★★☆", ux: "★★★★★" };
+            const ratingCurso = { datos: "4.9 (1.2k)", salud: "4.7 (890)", ux: "4.9 (2.1k)" };
+
+            let subtotalNumerico = 0;
+
+            listContainer.innerHTML = cart.map(key => {
+                const curso = CAT_CURSOS[key];
+                
+                // Calcular subtotal sumando valores numéricos
+                const precioNumerico = parseInt(curso.precio.replace(/\D/g, '')) || 0;
+                subtotalNumerico += precioNumerico;
+
+                const estrellas = estrellasCurso[key] || "★★★★★";
+                const ratingText = ratingCurso[key] || "4.8 (1.5k)";
+
+                // Formatear precio
+                let precioHTML = "";
+                if (curso.precio.includes("/mes")) {
+                    const partes = curso.precio.split("/mes");
+                    precioHTML = `${partes[0].trim()}<span style="font-size: 0.75rem; font-weight: 500; color: var(--texto-secundario);">/mes</span>`;
+                } else {
+                    precioHTML = curso.precio;
+                }
+
+                return `
+                    <div class="cart-card-item" id="item-row-${key}">
+                        <div class="cart-item-info">
+                            <h4>${curso.titulo}</h4>
+                            <div class="cart-item-details">${curso.cat} • ${curso.duracion} • ${curso.modalidad}</div>
+                            <div class="cart-item-stars">
+                                ${estrellas.split('').map(char => char === '★' ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>').join('')}
+                                <span>${ratingText}</span>
+                            </div>
+                        </div>
+                        <div class="cart-item-price-box">
+                            <span class="cart-item-price" style="color: ${curso.gratis ? 'var(--color-success)' : 'inherit'};">${precioHTML}</span>
+                            <button class="cart-item-delete" onclick="eliminarFilaCarrito('${key}')" aria-label="Eliminar del carrito"><i class="far fa-trash-alt"></i></button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Descuento si lleva más de un curso
+            const descuento = cart.length > 1 ? Math.round(subtotalNumerico * 0.1) : 0;
+            const total = subtotalNumerico - descuento;
+
+            if (descuento > 0) {
+                discountRow.style.display = 'flex';
+                summaryDiscount.innerText = `- $${descuento.toLocaleString('es-AR')}`;
+            } else {
+                discountRow.style.display = 'none';
+            }
+
+            summarySubtotal.innerText = `$${subtotalNumerico.toLocaleString('es-AR')}`;
+            summaryTotal.innerText = `$${total.toLocaleString('es-AR')}`;
+        }
+
+        function eliminarFilaCarrito(key) {
+            eliminarDelCarrito(key);
+            renderizarCarritoCompleto();
+            actualizarBadgeCarrito();
+        }
+
+        function procederAlPago() {
+            const cart = obtenerCarrito();
+            if (cart.length > 0) {
+                // Verificar si hay sesión activa en localStorage
+                const user = localStorage.getItem("untref_user_name");
+                if (!user) {
+                    // Redirigir a iniciar sesión guardando el paso siguiente en la query
+                    window.location.href = `iniciar-sesion.html?next=inscripcion.html?curso=${cart[0]}`;
+                } else {
+                    window.location.href = `inscripcion.html?curso=${cart[0]}`;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

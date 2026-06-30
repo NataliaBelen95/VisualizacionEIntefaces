@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>U-LINK | Crear Aporte</title>
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/publicar.css">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="../index.html" class="logo">U-<span>LINK</span></a>
+        <div class="navbar-actions">
+            <button id="theme-toggle" class="btn-theme"><i class="fas fa-moon"></i></button>
+            <a href="perfil.html" class="btn-perfil-nav"><div class="avatar-mini">UN</div></a>
+        </div>
+    </nav>
+
+    <div class="app-container">
+      <aside class="sidebar">
+    <div class="sidebar-section">
+        <p class="sidebar-title">Navegación</p>
+        <ul class="sidebar-menu">
+            <li><a href="../index.html"><i class="fas fa-home"></i> Inicio</a></li>
+            <li><a href="perfil.html"><i class="fas fa-user"></i> Mi Perfil</a></li>
+        </ul>
+    </div>
+    
+    <div class="sidebar-section">
+        <p class="sidebar-title">Mis Materias</p>
+        <ul class="sidebar-menu">
+            <li><a href="materia.html?materia=algoritmos"><i class="fas fa-graduation-cap"></i> Algoritmos I</a></li>
+            <li><a href="materia.html?materia=analisis"><i class="fas fa-calculator"></i> Análisis Matemático I</a></li>
+            <li><a href="materia.html?materia=web"><i class="fas fa-project-diagram"></i> Arquitectura Web</a></li>
+        </ul>
+    </div>
+</aside>
+
+        <main class="main-content">
+            <div class="form-container">
+                <h2>Crear Nuevo Aporte Académico</h2>
+                <p class="text-muted" style="margin-bottom: 2rem;">Compartí tus dudas o material de estudio con la comunidad de la UNLaM.</p>
+
+                <form id="aporteForm">
+                    <div class="form-group">
+                        <label for="titulo">Título de la publicación</label>
+                        <input type="text" id="titulo" required placeholder="Ej: Resumen para el primer parcial de Algoritmos Cátedra única">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="materia">Materia correspondiente</label>
+                            <select id="materia">
+                                <option value="algoritmos">Algoritmos y Estructuras de Datos I</option>
+                                <option value="analisis">Análisis Matemático I</option>
+                                <option value="web">Arquitectura Web</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="tipo">Tipo de aporte</label>
+                            <select id="tipo">
+                                <option value="duda">Tengo una duda / Pregunta</option>
+                                <option value="apunte">Voy a subir un Apunte / PDF</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contenido">Desarrollo / Mensaje</label>
+                        <textarea id="contenido" rows="6" required placeholder="Escribí acá los detalles de tu duda o la descripción de tu archivo..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Adjuntar archivo (Opcional)</label>
+                        <div class="dropzone">
+                            <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: var(--color-principal); margin-bottom: 0.5rem;"></i>
+                            <p>Arrastrá tu PDF acá o <span style="color: var(--color-principal); font-weight: bold; cursor: pointer;">buscalo en tu equipo</span></p>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary" style="width: 100%; padding: 1rem;">Publicar en la Comunidad</button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <div class="modal-overlay" id="successModal">
+        <div class="modal-card">
+            <div class="modal-icon"><i class="fas fa-trophy"></i></div>
+            <h2>¡Aporte Publicado con Éxito!</h2>
+            <p>Tu contribución ya está disponible para toda la facultad.</p>
+            
+            <div class="xp-badge">
+                <span class="xp-number">+150</span>
+                <span class="xp-text">PUNTOS DE REPUTACIÓN (XP)</span>
+            </div>
+            
+            <p class="text-muted" style="font-size: 0.85rem; margin-bottom: 1.5rem;">¡Gracias por ayudar a mantener centralizado el conocimiento de la UNLaM!</p>
+            <button class="btn-primary" onclick="cerrarYIrAPerfil()">Ver en mi Perfil</button>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('aporteForm');
+        const modal = document.getElementById('successModal');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault(); // Evitamos que refresque la página
+            modal.classList.add('active'); // Desplegamos el modal de alerta con animación
+        });
+
+        function cerrarYIrAPerfil() {
+            modal.classList.remove('active');
+            window.location.href = 'perfil.html'; // Redirige a la pantalla 5 (Gráfico)
+        }
+    </script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

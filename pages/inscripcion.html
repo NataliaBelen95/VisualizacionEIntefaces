@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNTREF | Formulario de Inscripción</title>
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .admission-layout {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .form-card {
+            background-color: var(--fondo-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 2.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .section-header-form {
+            margin: 2rem 0 1.25rem 0;
+            color: var(--color-untref);
+            font-size: 1.15rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .summary-card {
+            background-color: var(--fondo-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 6rem;
+        }
+
+        .summary-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--texto-muted);
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        @media (max-width: 900px) {
+            .admission-layout {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAV BAR (Nielsen #1, #3 y #4) -->
+    <nav class="navbar">
+        <a href="../index.html" class="logo-untref">
+            <i class="fas fa-graduation-cap"></i> UNTREF <span>| Formación</span>
+        </a>
+
+        <div class="nav-menu" id="nav-menu">
+            <button class="menu-close" id="menu-close-btn" aria-label="Cerrar menú">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <a href="../index.html" class="nav-item"><i class="fas fa-arrow-left"></i> Volver al Catálogo</a>
+            <a href="aula-virtual.html" class="nav-item"><i class="fas fa-laptop-code"></i> Aula Virtual</a>
+            
+            <!-- Carrito con indicador dinámico -->
+            <div class="cart-icon-wrapper nav-item" onclick="window.location.href='carrito.html'">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Carrito</span>
+                <span class="cart-badge" style="display: none;">0</span>
+            </div>
+
+            <a href="perfil.html" class="nav-item"><i class="fas fa-user-circle"></i> Mi Perfil</a>
+        </div>
+
+        <div class="nav-actions">
+            <!-- Botón de Modo Oscuro -->
+            <button id="theme-toggle" class="nav-item-btn" aria-label="Cambiar modo de pantalla">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button class="menu-toggle" id="menu-open-btn" aria-label="Abrir menú">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- FORMULARIO DE ADMISIÓN -->
+    <div class="admission-layout">
+        <main>
+            <!-- Línea de progreso (Nielsen #1: System Status, Gestalt: Continuidad) -->
+            <div class="steps-progress">
+                <div class="step-item completed"><i class="fas fa-check-circle"></i> 1. Selección</div>
+                <div class="step-item active"><i class="fas fa-edit"></i> 2. Legajo Académico</div>
+                <div class="step-item" id="step-pago"><i class="fas fa-lock"></i> 3. Pago Seguro</div>
+            </div>
+
+            <div class="form-card">
+                <h2 id="inscripcion-titulo">Formulario de Admisión Académica</h2>
+                <p style="color: var(--texto-secundario); font-size: 0.9rem; margin-bottom: 2rem;">
+                    Completá tus antecedentes para generar tu legajo temporal de alumno regular.
+                </p>
+
+                <form id="registroForm">
+                    <!-- BLOQUE 1: DATOS PERSONALES -->
+                    <h3 class="section-header-form"><i class="far fa-user"></i> Datos del Postulante</h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nombre">Nombre Completo</label>
+                            <input type="text" id="nombre" required placeholder="Ej: Juan Pérez">
+                        </div>
+                        <div class="form-group">
+                            <label for="dni">Documento (DNI / Pasaporte)</label>
+                            <input type="text" id="dni" required placeholder="Ej: 35444888">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="email">Correo Electrónico</label>
+                            <input type="email" id="email" required placeholder="juan.perez@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="telefono">Teléfono de Contacto</label>
+                            <input type="tel" id="telefono" required placeholder="Ej: 11 5555 4444">
+                        </div>
+                    </div>
+
+                    <!-- BLOQUE 2: ANTECEDENTES ACADÉMICOS -->
+                    <h3 class="section-header-form"><i class="fas fa-graduation-cap"></i> Formación Previa</h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nivel-estudios">Máximo Nivel Alcanzado</label>
+                            <select id="nivel-estudios" required>
+                                <option value="secundario">Secundario Completo</option>
+                                <option value="terciario">Terciario en Curso / Completo</option>
+                                <option value="universitario">Universitario en Curso / Completo</option>
+                                <option value="posgrado">Posgrado / Maestría</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="institucion">Institución Emisora del Título</label>
+                            <input type="text" id="institucion" required placeholder="Ej: Colegio Secundario / Universidad">
+                        </div>
+                    </div>
+
+                    <!-- BLOQUE 3: FACTURACIÓN (Oculto condicionalmente si es gratis) -->
+                    <div id="seccion-facturacion">
+                        <h3 class="section-header-form"><i class="far fa-credit-card"></i> Datos de Facturación</h3>
+                        
+                        <div class="form-group">
+                            <label for="direccion">Domicilio de Facturación</label>
+                            <input type="text" id="direccion" placeholder="Calle, Número, Piso, Dpto.">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="provincia">Provincia / Región</label>
+                                <input type="text" id="provincia" placeholder="Ej: Buenos Aires">
+                            </div>
+                            <div class="form-group">
+                                <label for="fiscal">Condición Fiscal</label>
+                                <select id="fiscal">
+                                    <option value="cf">Consumidor Final</option>
+                                    <option value="ri">Responsable Inscripto (Factura A)</option>
+                                    <option value="mono">Monotributista</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BOTÓN DINÁMICO DE SUBMIT -->
+                    <button type="submit" id="btn-envio-formulario" class="btn btn-primary btn-full" style="padding: 1rem; margin-top: 2rem;">
+                        <span id="texto-boton">Proceder al Pago Seguro</span> <i id="icono-boton" class="fas fa-lock" style="margin-left: 0.5rem;"></i>
+                    </button>
+                </form>
+            </div>
+        </main>
+
+        <!-- RESUMEN LATERAL (Nielsen #6: Reconocimiento) -->
+        <aside>
+            <div class="summary-card">
+                <span class="summary-title">Resumen de Admisión</span>
+                <div id="summary-content" style="display:flex; flex-direction:column; gap:1rem;">
+                    <div>
+                        <span id="sum-cat" style="font-size: 0.7rem; font-weight: 800; color: var(--texto-muted); text-transform: uppercase;">Categoría</span>
+                        <h4 id="sum-titulo" style="font-size: 1.1rem; color: var(--texto-principal); margin-top: 0.15rem; line-height:1.3;"></h4>
+                    </div>
+                    <div style="font-size:0.85rem; color:var(--texto-secundario); display:flex; flex-direction:column; gap:0.5rem;">
+                        <div><i class="far fa-clock"></i> Duración: <strong id="sum-duracion" style="color:var(--texto-principal);"></strong></div>
+                        <div><i class="fas fa-laptop-house"></i> Modalidad: <strong id="sum-modalidad" style="color:var(--texto-principal);"></strong></div>
+                    </div>
+                    <div style="border-top: 1px solid var(--border-color); padding-top: 1rem; display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-weight:600; font-size:0.9rem;">Cuota Mensual:</span>
+                        <strong id="sum-precio" style="font-size:1.15rem; color:var(--color-untref);"></strong>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3 style="font-size: 1.2rem; color: var(--color-untref); margin-bottom: 1rem; font-weight: 800;">
+                    <i class="fas fa-graduation-cap"></i> UNTREF Virtual
+                </h3>
+                <p>Portal oficial de admisiones de la Universidad Virtual Tres de Febrero. Educación pública de calidad, accesible desde cualquier lugar del país.</p>
+                <div style="display:flex; gap:1rem; margin-top:1.25rem; font-size:1.1rem;">
+                    <a href="#" style="color:var(--texto-muted);"><i class="fab fa-facebook"></i></a>
+                    <a href="#" style="color:var(--texto-muted);"><i class="fab fa-instagram"></i></a>
+                    <a href="#" style="color:var(--texto-muted);"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h4>Contacto y Soporte</h4>
+                <p style="margin-bottom:0.75rem;"><i class="far fa-envelope"></i> admisiones@untref.edu.ar</p>
+                <p style="margin-bottom:0.75rem;"><i class="fas fa-phone-alt"></i> +54 (11) 4734-2200</p>
+                <p><i class="far fa-clock"></i> Lunes a Viernes de 9:00 a 18:00 hs</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            UNTREF Virtual © 2026 • Universidad Virtual Tres de Febrero • Todos los derechos reservados.
+        </div>
+    </footer>
+
+    <!-- LOGIC SCRIPTS -->
+    <script src="../js/cursos.js"></script>
+    <script src="../js/main.js"></script>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const cursoParam = params.get('curso') || 'datos';
+        const cursoObj = CAT_CURSOS[cursoParam];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Rellenar resumen lateral si el curso existe
+            if (cursoObj) {
+                document.getElementById('sum-titulo').innerText = cursoObj.titulo;
+                document.getElementById('sum-cat').innerText = cursoObj.cat;
+                document.getElementById('sum-duracion').innerText = cursoObj.duracion;
+                document.getElementById('sum-modalidad').innerText = cursoObj.modalidad;
+                document.getElementById('sum-precio').innerText = cursoObj.precio;
+                
+                if(cursoObj.gratis) {
+                    document.getElementById('sum-precio').style.color = "var(--color-success)";
+                }
+
+                // Lógica de gratuidad (Nielsen #7: Eficiencia de Uso)
+                if (cursoObj.gratis) {
+                    // 1. Modificar barra de progreso
+                    document.getElementById('step-pago').innerHTML = `<i class="fas fa-check-double"></i> 3. Ingreso Directo`;
+                    
+                    // 2. Ocultar sección de facturación
+                    const facturacion = document.getElementById('seccion-facturacion');
+                    if (facturacion) facturacion.style.display = 'none';
+
+                    // 3. Quitar atributos required de campos de facturación
+                    document.getElementById('direccion').removeAttribute('required');
+                    document.getElementById('provincia').removeAttribute('required');
+
+                    // 4. Modificar botón final
+                    const btn = document.getElementById('btn-envio-formulario');
+                    document.getElementById('texto-boton').innerText = "Finalizar Admisión Directa";
+                    document.getElementById('icono-boton').className = "fas fa-user-check";
+                    btn.className = "btn btn-success btn-full";
+                } else {
+                    // Si es de pago, establecer requerimientos obligatorios
+                    document.getElementById('direccion').setAttribute('required', 'true');
+                    document.getElementById('provincia').setAttribute('required', 'true');
+                }
+            }
+
+            // Manejo de envío
+            document.getElementById('registroForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                // Guardar los datos básicos en localStorage para simulación del perfil
+                const nombreVal = document.getElementById('nombre').value;
+                localStorage.setItem("untref_user_name", nombreVal);
+
+                if (cursoObj && cursoObj.gratis) {
+                    // Cursos gratuitos van directo al dashboard
+                    window.location.href = `perfil.html?curso=${cursoParam}`;
+                } else {
+                    // Cursos arancelados van a pasarela de pagos
+                    window.location.href = `pago.html?curso=${cursoParam}`;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

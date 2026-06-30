@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNTREF | Pago Seguro</title>
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .checkout-layout {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 3rem;
+            max-width: 1100px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .checkout-box {
+            background-color: var(--fondo-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 2.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .card-visual-mockup {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            color: #ffffff;
+            font-family: monospace;
+            position: relative;
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            height: 180px;
+            margin-bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-chip {
+            width: 40px;
+            height: 30px;
+            background-color: #fbbf24;
+            border-radius: 6px;
+        }
+
+        .card-visual-number {
+            font-size: 1.3rem;
+            letter-spacing: 2px;
+            margin: 1.5rem 0 1rem 0;
+        }
+
+        .card-visual-bottom {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+        }
+
+        .summary-box {
+            background-color: var(--fondo-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            height: fit-content;
+        }
+
+        @media (max-width: 900px) {
+            .checkout-layout {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAV BAR (Nielsen #1, #3 y #4) -->
+    <nav class="navbar">
+        <a href="../index.html" class="logo-untref">
+            <i class="fas fa-graduation-cap"></i> UNTREF <span>| Formación</span>
+        </a>
+
+        <div class="nav-menu" id="nav-menu">
+            <button class="menu-close" id="menu-close-btn" aria-label="Cerrar menú">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <a href="../index.html" class="nav-item"><i class="fas fa-arrow-left"></i> Cancelar Proceso</a>
+        </div>
+
+        <div class="nav-actions">
+            <!-- Botón de Modo Oscuro -->
+            <button id="theme-toggle" class="nav-item-btn" aria-label="Cambiar modo de pantalla">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button class="menu-toggle" id="menu-open-btn" aria-label="Abrir menú">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- DETALLE DEL CHECKOUT -->
+    <div class="checkout-layout">
+        
+        <main>
+            <!-- Barra de pasos -->
+            <div class="steps-progress" style="max-width: 100%;">
+                <div class="step-item completed"><i class="fas fa-check-circle"></i> Selección</div>
+                <div class="step-item completed"><i class="fas fa-check-circle"></i> Registro</div>
+                <div class="step-item active"><i class="fas fa-credit-card"></i> 3. Pago Seguro</div>
+            </div>
+
+            <div class="checkout-box">
+                <h3 style="margin-bottom: 0.5rem;"><i class="fas fa-lock" style="color: var(--color-success);"></i> Pasarela de Pago Oficial</h3>
+                <p style="color: var(--texto-secundario); font-size: 0.85rem; margin-bottom: 2rem;">
+                    Conexión cifrada con protocolo SSL de 256 bits para transacciones arancelarias.
+                </p>
+
+                <!-- Tarjeta Interactiva (Gestalt: Cierre, Semejanza) -->
+                <div class="card-visual-mockup">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div class="card-chip"></div>
+                        <span style="font-weight: 700; font-size: 1.1rem; font-style: italic;">VISA</span>
+                    </div>
+                    <div class="card-visual-number" id="mock-number">•••• •••• •••• ••••</div>
+                    <div class="card-visual-bottom">
+                        <div>
+                            <div style="font-size:0.6rem; opacity:0.6; text-transform:uppercase;">Titular</div>
+                            <div id="mock-name" style="text-transform:uppercase;">JUAN PEREZ</div>
+                        </div>
+                        <div>
+                            <div style="font-size:0.6rem; opacity:0.6; text-transform:uppercase;">Vence</div>
+                            <div id="mock-expiry">MM/AA</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formulario de Tarjeta -->
+                <form id="pagoForm">
+                    <div class="form-group">
+                        <label for="card-name">Nombre impreso en la tarjeta</label>
+                        <input type="text" id="card-name" required placeholder="JUAN PEREZ" oninput="sincronizarMockCard()">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="card-number">Número de la tarjeta</label>
+                        <div style="position:relative; display:flex; align-items:center;">
+                            <input type="text" id="card-number" required placeholder="xxxx xxxx xxxx xxxx" maxlength="19" oninput="sincronizarMockCard()" style="padding-right: 2.5rem;">
+                            <i class="far fa-credit-card" style="position:absolute; right:15px; color:var(--texto-muted);"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="card-expiry">Vencimiento</label>
+                            <input type="text" id="card-expiry" required placeholder="MM/AA" maxlength="5" oninput="sincronizarMockCard()">
+                        </div>
+                        <div class="form-group">
+                            <label for="card-cvv">Código de Seguridad (CVV)</label>
+                            <input type="password" id="card-cvv" required placeholder="123" maxlength="3">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success btn-full" style="padding: 1rem; margin-top: 1.5rem;">
+                        Confirmar Transacción y Matricularse
+                    </button>
+                </form>
+            </div>
+        </main>
+
+        <!-- RESUMEN DE COMPRA -->
+        <aside>
+            <div class="summary-box">
+                <h4 style="margin-bottom: 1.25rem; font-size: 1.1rem; border-bottom: 1.5px solid var(--border-color); padding-bottom: 0.5rem;"><i class="fas fa-file-invoice-dollar"></i> Concepto de Cobro</h4>
+                <div style="display:flex; flex-direction:column; gap:1.25rem;">
+                    <div>
+                        <strong id="item-nombre" style="font-size: 0.95rem; line-height: 1.3; display:block;"></strong>
+                        <span style="font-size: 0.75rem; color:var(--texto-muted);">Matrícula + Mes 1 de Cursada</span>
+                    </div>
+
+                    <div style="background-color: var(--fondo-principal); padding: 1rem; border-radius: var(--radius-sm); font-size:0.9rem; display:flex; flex-direction:column; gap:0.5rem;">
+                        <div style="display:flex; justify-content:space-between;">
+                            <span>Matrícula de Ingreso:</span>
+                            <strong>$15.000</strong>
+                        </div>
+                        <div style="display:flex; justify-content:space-between;">
+                            <span>Cuota Mensual 1:</span>
+                            <strong id="cuota-precio">$0</strong>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; border-top:1px dashed var(--border-color); padding-top:0.5rem; font-weight:700; font-size: 1rem;">
+                            <span>Monto Final:</span>
+                            <span id="monto-final" style="color:var(--color-untref);"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- MODAL DE ÉXITO (Nielsen Heuristics #1: Visibilidad del Sistema) -->
+    <div class="modal-overlay" id="pagoExitosoModal">
+        <div class="modal-card">
+            <div class="modal-icon"><i class="fas fa-check-circle"></i></div>
+            <h2 style="margin-bottom:0.5rem;">¡Inscripción Finalizada!</h2>
+            <p style="color: var(--texto-secundario); font-size: 0.9rem; margin-bottom: 1.5rem;">
+                Tu transacción ha sido validada y tu legajo de alumno regular está activo.
+            </p>
+            
+            <div style="background-color: var(--fondo-principal); border-left: 4px solid var(--color-success); padding: 1rem; border-radius: var(--radius-sm); text-align: left; margin-bottom: 1.5rem;">
+                <p style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-success); margin-bottom: 0.25rem;">Legajo Generado</p>
+                <strong style="font-size: 1.15rem; color: var(--texto-principal);">UNTREF-88432</strong>
+                <p style="font-size:0.75rem; color: var(--texto-secundario); margin-top: 0.5rem;">
+                    Hemos enviado a tu casilla las credenciales de acceso para la plataforma virtual.
+                </p>
+            </div>
+            
+            <button class="btn btn-primary btn-full" onclick="irAlPerfil()">
+                Ingresar a Mi Panel Académico <i class="fas fa-chevron-right" style="margin-left: 0.5rem;"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3 style="font-size: 1.2rem; color: var(--color-untref); margin-bottom: 1rem; font-weight: 800;">
+                    <i class="fas fa-graduation-cap"></i> UNTREF Virtual
+                </h3>
+                <p>Portal oficial de admisiones de la Universidad Virtual Tres de Febrero. Educación pública de calidad, accesible desde cualquier lugar del país.</p>
+                <div style="display:flex; gap:1rem; margin-top:1.25rem; font-size:1.1rem;">
+                    <a href="#" style="color:var(--texto-muted);"><i class="fab fa-facebook"></i></a>
+                    <a href="#" style="color:var(--texto-muted);"><i class="fab fa-instagram"></i></a>
+                    <a href="#" style="color:var(--texto-muted);"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Contacto y Soporte</h4>
+                <p style="margin-bottom:0.75rem;"><i class="far fa-envelope"></i> admisiones@untref.edu.ar</p>
+                <p style="margin-bottom:0.75rem;"><i class="fas fa-phone-alt"></i> +54 (11) 4734-2200</p>
+                <p><i class="far fa-clock"></i> Lunes a Viernes de 9:00 a 18:00 hs</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            UNTREF Virtual © 2026 • Universidad Virtual Tres de Febrero • Todos los derechos reservados.
+        </div>
+    </footer>
+
+    <!-- LOGIC SCRIPTS -->
+    <script src="../js/cursos.js"></script>
+    <script src="../js/main.js"></script>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const cursoKey = params.get('curso') || 'datos';
+        const cursoObj = CAT_CURSOS[cursoKey];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (cursoObj) {
+                document.getElementById('item-nombre').innerText = cursoObj.titulo;
+                document.getElementById('cuota-precio').innerText = cursoObj.precio;
+                
+                // Calcular total (arancel numérico + 15000 de matrícula)
+                const valorNumerico = parseInt(cursoObj.precio.replace(/\D/g, '')) || 0;
+                const total = valorNumerico + 15000;
+                
+                document.getElementById('monto-final').innerText = `$${total.toLocaleString('es-AR')}`;
+            }
+        });
+
+        // Sincronizador de tarjeta en tiempo real (Gestalt: Común Destino)
+        function sincronizarMockCard() {
+            const numVal = document.getElementById('card-number').value;
+            const nameVal = document.getElementById('card-name').value;
+            const expVal = document.getElementById('card-expiry').value;
+
+            document.getElementById('mock-number').innerText = numVal !== "" ? numVal : "•••• •••• •••• ••••";
+            document.getElementById('mock-name').innerText = nameVal !== "" ? nameVal : "JUAN PEREZ";
+            document.getElementById('mock-expiry').innerText = expVal !== "" ? expVal : "MM/AA";
+        }
+
+        function irAlPerfil() {
+            window.location.href = `perfil.html?curso=${cursoKey}`;
+        }
+    </script>
+</body>
+</html>
