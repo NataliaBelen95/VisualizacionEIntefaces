@@ -246,8 +246,14 @@
             
             // Simular éxito de verificación
             const name = localStorage.getItem("untref_temp_register_name") || "Alumno";
+            const emailPers = localStorage.getItem("untref_temp_register_email") || "alumno@correo.com";
+            
             localStorage.setItem("untref_user_name", name);
+            localStorage.setItem("untref_user_email_personal", emailPers);
+            localStorage.setItem("untref_user_phone", "+54 (11) 9988-7766"); // Teléfono ficticio por defecto
+            
             localStorage.removeItem("untref_temp_register_name");
+            localStorage.removeItem("untref_temp_register_email");
             
             alert('¡Correo verificado con éxito! Cuenta activada.');
             

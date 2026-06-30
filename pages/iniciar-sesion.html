@@ -259,8 +259,9 @@
             const name = document.getElementById('reg-name').value;
             const email = document.getElementById('reg-email').value;
             
-            // Guardar nombre de forma provisional
+            // Guardar datos de forma provisional
             localStorage.setItem("untref_temp_register_name", name);
+            localStorage.setItem("untref_temp_register_email", email);
             
             // Redirigir a verificación de mail
             window.location.href = `confirmar-correo.html?email=${encodeURIComponent(email)}&next=${encodeURIComponent(nextUrl)}`;
