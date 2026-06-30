@@ -318,6 +318,45 @@
                 }
             }
 
+            // Pre-llenar datos del postulante si ya inició sesión (Heurística #7: Eficiencia de Uso)
+            const storedName = localStorage.getItem("untref_user_name");
+            const storedEmail = localStorage.getItem("untref_user_email_personal");
+            const storedPhone = localStorage.getItem("untref_user_phone");
+
+            if (storedName) {
+                document.getElementById('nombre').value = storedName;
+                document.getElementById('nombre').readOnly = true;
+                document.getElementById('nombre').style.backgroundColor = "var(--border-color)";
+                document.getElementById('nombre').style.cursor = "not-allowed";
+                document.getElementById('nombre').style.opacity = "0.7";
+            }
+            if (storedEmail) {
+                document.getElementById('email').value = storedEmail;
+                document.getElementById('email').readOnly = true;
+                document.getElementById('email').style.backgroundColor = "var(--border-color)";
+                document.getElementById('email').style.cursor = "not-allowed";
+                document.getElementById('email').style.opacity = "0.7";
+            }
+            if (storedPhone) {
+                document.getElementById('telefono').value = storedPhone;
+            }
+            
+            // Si el alumno regular es Juan Pérez, precargar sus antecedentes conocidos
+            if (storedName === "Juan Pérez") {
+                document.getElementById('dni').value = "35.444.888";
+                document.getElementById('dni').readOnly = true;
+                document.getElementById('dni').style.backgroundColor = "var(--border-color)";
+                document.getElementById('dni').style.cursor = "not-allowed";
+                document.getElementById('dni').style.opacity = "0.7";
+                
+                document.getElementById('nivel-estudios').value = "universitario";
+                document.getElementById('institucion').value = "Colegio Nacional de Buenos Aires";
+                document.getElementById('institucion').readOnly = true;
+                document.getElementById('institucion').style.backgroundColor = "var(--border-color)";
+                document.getElementById('institucion').style.cursor = "not-allowed";
+                document.getElementById('institucion').style.opacity = "0.7";
+            }
+
             // Manejo de envío
             document.getElementById('registroForm').addEventListener('submit', (e) => {
                 e.preventDefault();
