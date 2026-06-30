@@ -219,7 +219,7 @@
             </div>
             
             <button class="btn btn-primary btn-full" onclick="irAlPerfil()">
-                Ingresar a Mi Panel Académico <i class="fas fa-chevron-right" style="margin-left: 0.5rem;"></i>
+                Ingresar a Mi Perfil Académico <i class="fas fa-chevron-right" style="margin-left: 0.5rem;"></i>
             </button>
         </div>
     </div>
@@ -258,7 +258,20 @@
         const cursoKey = params.get('curso') || 'datos';
         const cursoObj = CAT_CURSOS[cursoKey];
 
+        // Redirección de seguridad (Nielsen #5): si el curso es gratis, no requiere pago
+        if (cursoObj && cursoObj.gratis) {
+            window.location.href = `perfil.html?curso=${cursoKey}`;
+        }
+
+        let activeUserName = localStorage.getItem("untref_user_name") || "JUAN PEREZ";
+
         document.addEventListener('DOMContentLoaded', () => {
+            // Verificar si hay sesión activa
+            if (!localStorage.getItem("untref_user_name")) {
+                window.location.href = `iniciar-sesion.html?next=pago.html?curso=${cursoKey}`;
+                return;
+            }
+
             if (cursoObj) {
                 document.getElementById('item-nombre').innerText = cursoObj.titulo;
                 document.getElementById('cuota-precio').innerText = cursoObj.precio;
@@ -269,6 +282,14 @@
                 
                 document.getElementById('monto-final').innerText = `$${total.toLocaleString('es-AR')}`;
             }
+
+            // Inicializar nombre en la tarjeta con el nombre del legajo del alumno
+            const cardNameInput = document.getElementById('card-name');
+            const mockNameDiv = document.getElementById('mock-name');
+            if (cardNameInput && mockNameDiv) {
+                cardNameInput.value = activeUserName.toUpperCase();
+                mockNameDiv.innerText = activeUserName.toUpperCase();
+            }
         });
 
         // Sincronizador de tarjeta en tiempo real (Gestalt: Común Destino)
@@ -278,9 +299,44 @@
             const expVal = document.getElementById('card-expiry').value;
 
             document.getElementById('mock-number').innerText = numVal !== "" ? numVal : "•••• •••• •••• ••••";
-            document.getElementById('mock-name').innerText = nameVal !== "" ? nameVal : "JUAN PEREZ";
+            document.getElementById('mock-name').innerText = nameVal !== "" ? nameVal.toUpperCase() : activeUserName.toUpperCase();
             document.getElementById('mock-expiry').innerText = expVal !== "" ? expVal : "MM/AA";
         }
+
+        // Formateador interactivo de número de tarjeta en tiempo real (Heurística #5: Prevención de errores)
+        const cardNumberInput = document.getElementById('card-number');
+        if (cardNumberInput) {
+            cardNumberInput.addEventListener('input', (e) => {
+                let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+                let formatted = '';
+                for (let i = 0; i < value.length; i++) {
+                    if (i > 0 && i % 4 === 0) formatted += ' ';
+                    formatted += value[i];
+                }
+                e.target.value = formatted.slice(0, 19);
+                sincronizarMockCard();
+            });
+        }
+
+        // Formateador de vencimiento MM/AA
+        const cardExpiryInput = document.getElementById('card-expiry');
+        if (cardExpiryInput) {
+            cardExpiryInput.addEventListener('input', (e) => {
+                let value = e.target.value.replace(/\//g, '').replace(/[^0-9]/gi, '');
+                if (value.length > 2) {
+                    e.target.value = value.slice(0, 2) + '/' + value.slice(2, 4);
+                } else {
+                    e.target.value = value;
+                }
+                sincronizarMockCard();
+            });
+        }
+
+        // Simular envío de formulario y despliegue del modal de éxito
+        document.getElementById('pagoForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            document.getElementById('pagoExitosoModal').classList.add('active');
+        });
 
         function irAlPerfil() {
             window.location.href = `perfil.html?curso=${cursoKey}`;
