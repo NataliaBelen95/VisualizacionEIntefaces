@@ -268,43 +268,9 @@
 
             <!-- PROGRAMA ACTIVO (Gestalt: Cierre y Proximidad) -->
             <section class="active-course-section" style="margin-top: 2rem;">
-                <h3><i class="fas fa-laptop-code"></i> Programa en Cursada Activa</h3>
-                <div class="panel-course-card">
-                    <div class="course-info-header">
-                        <div>
-                            <span class="course-badge badge-popular" id="track-categoria" style="font-size:0.65rem;">Posgrado</span>
-                            <h4 id="track-titulo" style="font-size: 1.25rem; margin: 0.5rem 0 0.25rem 0;">Especialización en Ciencia de Datos Aplicada</h4>
-                            <p id="track-resolucion" style="font-size: 0.75rem; color: var(--texto-secundario); font-weight: 500;">
-                                <i class="fas fa-certificate" style="color: var(--color-untref);"></i> Certificación Oficial — Res. Rectoral UNTREF Nº 1422/24
-                            </p>
-                            <p style="font-size: 0.8rem; color: var(--texto-muted); margin-top: 0.75rem;">
-                                <i class="far fa-calendar-check"></i> Próxima clase: Sábado 9:00 hs — Aula Virtual 3
-                            </p>
-                        </div>
-                        
-                        <!-- SVG Ring de Progreso -->
-                        <div class="progress-ring-box">
-                            <svg class="progress-ring" width="80" height="80">
-                                <circle stroke="var(--border-color)" stroke-width="6" fill="transparent" r="36" cx="40" cy="40"/>
-                                <circle class="progress-ring__circle" stroke="var(--color-tech)" stroke-width="6" stroke-linecap="round" fill="transparent" r="36" cx="40" cy="40"/>
-                            </svg>
-                            <div class="progress-text">35%</div>
-                        </div>
-                    </div>
-
-                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
-                        <div style="display:flex; gap:2rem;">
-                            <div style="display:flex; flex-direction:column;">
-                                <span style="font-size:0.7rem; color:var(--texto-muted); text-transform:uppercase;">Módulos</span>
-                                <strong style="font-size:1rem; color:var(--texto-principal);">1 de 4</strong>
-                            </div>
-                            <div style="display:flex; flex-direction:column;">
-                                <span style="font-size:0.7rem; color:var(--texto-muted); text-transform:uppercase;">Asistencia</span>
-                                <strong style="font-size:1rem; color:var(--texto-principal);">100%</strong>
-                            </div>
-                        </div>
-                        <a href="#" id="btn-aula-link" class="btn btn-primary"><i class="fas fa-external-link-alt"></i> Ingresar al Campus Virtual</a>
-                    </div>
+                <h3><i class="fas fa-laptop-code"></i> Programas en Cursada Activa</h3>
+                <div id="active-courses-container" style="display:flex; flex-direction:column; gap:1.5rem;">
+                    <!-- Se inyecta dinámicamente por JS -->
                 </div>
             </section>
         </main>
@@ -439,36 +405,67 @@
             document.getElementById('user-display-phone').innerText = storedPhone;
 
             // Inyectar datos de cursada activa
-            if (cursoActivo) {
-                document.getElementById('track-titulo').innerText = cursoActivo.titulo;
-                document.getElementById('track-categoria').innerText = cursoActivo.cat;
-                
-                // Configurar enlace del campus virtual
-                document.getElementById('btn-aula-link').href = `aula-virtual.html?curso=${cursoActivoKey}`;
+            const activeKeys = cursoActivoKey.split(',');
+            const activeCourses = activeKeys.map(k => CAT_CURSOS[k]).filter(Boolean);
+            const coursesContainer = document.getElementById('active-courses-container');
 
-                // Si el curso es gratuito (ux), ocultar descarga de comprobante de pago
-                if (cursoActivo.gratis) {
+            if (coursesContainer && activeCourses.length > 0) {
+                coursesContainer.innerHTML = activeCourses.map((curso, index) => {
+                    const key = activeKeys[index];
+                    const circumference = 226.195;
+                    const offset = circumference - (35 / 100) * circumference;
+
+                    return `
+                        <div class="panel-course-card">
+                            <div class="course-info-header">
+                                <div>
+                                    <span class="course-badge badge-popular" style="font-size:0.65rem;">${curso.cat}</span>
+                                    <h4 style="font-size: 1.25rem; margin: 0.5rem 0 0.25rem 0;">${curso.titulo}</h4>
+                                    <p style="font-size: 0.75rem; color: var(--texto-secundario); font-weight: 500;">
+                                        <i class="fas fa-certificate" style="color: var(--color-untref);"></i> Certificación Oficial — Res. Rectoral UNTREF Nº 1422/24
+                                    </p>
+                                    <p style="font-size: 0.8rem; color: var(--texto-muted); margin-top: 0.75rem;">
+                                        <i class="far fa-calendar-check"></i> Próxima clase: Sábado 9:00 hs — Aula Virtual ${index + 1}
+                                    </p>
+                                </div>
+                                
+                                <!-- SVG Ring de Progreso -->
+                                <div class="progress-ring-box">
+                                    <svg class="progress-ring" width="80" height="80">
+                                        <circle stroke="var(--border-color)" stroke-width="6" fill="transparent" r="36" cx="40" cy="40"/>
+                                        <circle class="progress-ring__circle" stroke="var(--color-tech)" stroke-width="6" stroke-linecap="round" fill="transparent" r="36" cx="40" cy="40" style="stroke-dasharray: ${circumference}; stroke-dashoffset: ${offset};"/>
+                                    </svg>
+                                    <div class="progress-text">35%</div>
+                                </div>
+                            </div>
+
+                            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+                                <div style="display:flex; gap:2rem;">
+                                    <div style="display:flex; flex-direction:column;">
+                                        <span style="font-size:0.7rem; color:var(--texto-muted); text-transform:uppercase;">Módulos</span>
+                                        <strong style="font-size:1rem; color:var(--texto-principal);">1 de 4</strong>
+                                    </div>
+                                    <div style="display:flex; flex-direction:column;">
+                                        <span style="font-size:0.7rem; color:var(--texto-muted); text-transform:uppercase;">Asistencia</span>
+                                        <strong style="font-size:1rem; color:var(--texto-principal);">100%</strong>
+                                    </div>
+                                </div>
+                                <a href="aula-virtual.html?curso=${key}" class="btn btn-primary"><i class="fas fa-external-link-alt"></i> Ingresar al Campus Virtual</a>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                // Lógica de comprobantes: si todos los cursos activos son gratuitos, ocultar comprobante de pago
+                const esTodoGratis = activeCourses.every(c => c.gratis);
+                if (esTodoGratis) {
                     const comprobante = document.getElementById('item-comprobante');
                     if (comprobante) comprobante.style.display = 'none';
                 }
             }
 
-            // Animación del progress ring SVG
-            const circle = document.querySelector('.progress-ring__circle');
-            if (circle) {
-                const radius = circle.r.baseVal.value;
-                const circumference = 2 * Math.PI * radius;
-                circle.style.strokeDasharray = `${circumference}`;
-                
-                // 35% de progreso (simulado)
-                const offset = circumference - (35 / 100) * circumference;
-                setTimeout(() => {
-                    circle.style.strokeDashoffset = offset;
-                }, 100);
-            }
-
-            // Desmatricular del carrito el curso comprado actualmente para mantener la pureza del carrito
-            eliminarDelCarrito(cursoActivoKey);
+            // Desmatricular del carrito todos los cursos comprados
+            activeKeys.forEach(k => eliminarDelCarrito(k));
         });
 
         function abrirModalEditarDatos() {

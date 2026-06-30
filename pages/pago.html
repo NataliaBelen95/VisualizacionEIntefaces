@@ -176,26 +176,8 @@
         <aside>
             <div class="summary-box">
                 <h4 style="margin-bottom: 1.25rem; font-size: 1.1rem; border-bottom: 1.5px solid var(--border-color); padding-bottom: 0.5rem;"><i class="fas fa-file-invoice-dollar"></i> Concepto de Cobro</h4>
-                <div style="display:flex; flex-direction:column; gap:1.25rem;">
-                    <div>
-                        <strong id="item-nombre" style="font-size: 0.95rem; line-height: 1.3; display:block;"></strong>
-                        <span style="font-size: 0.75rem; color:var(--texto-muted);">Matrícula + Mes 1 de Cursada</span>
-                    </div>
-
-                    <div style="background-color: var(--fondo-principal); padding: 1rem; border-radius: var(--radius-sm); font-size:0.9rem; display:flex; flex-direction:column; gap:0.5rem;">
-                        <div style="display:flex; justify-content:space-between;">
-                            <span>Matrícula de Ingreso:</span>
-                            <strong>$15.000</strong>
-                        </div>
-                        <div style="display:flex; justify-content:space-between;">
-                            <span>Cuota Mensual 1:</span>
-                            <strong id="cuota-precio">$0</strong>
-                        </div>
-                        <div style="display:flex; justify-content:space-between; border-top:1px dashed var(--border-color); padding-top:0.5rem; font-weight:700; font-size: 1rem;">
-                            <span>Monto Final:</span>
-                            <span id="monto-final" style="color:var(--color-untref);"></span>
-                        </div>
-                    </div>
+                <div id="checkout-summary-container" style="display:flex; flex-direction:column; gap:1.25rem;">
+                    <!-- Se inyecta dinámicamente por JS -->
                 </div>
             </div>
         </aside>
@@ -256,10 +238,14 @@
     <script>
         const params = new URLSearchParams(window.location.search);
         const cursoKey = params.get('curso') || 'datos';
-        const cursoObj = CAT_CURSOS[cursoKey];
+        
+        // Separar las claves de cursos seleccionados
+        const keys = cursoKey.split(',');
+        const selectedCourses = keys.map(k => CAT_CURSOS[k]).filter(Boolean);
 
-        // Redirección de seguridad (Nielsen #5): si el curso es gratis, no requiere pago
-        if (cursoObj && cursoObj.gratis) {
+        // Redirección de seguridad (Nielsen #5): si todos los cursos son gratis, no requiere pago
+        const esTodoGratis = selectedCourses.every(c => c.gratis);
+        if (selectedCourses.length > 0 && esTodoGratis) {
             window.location.href = `perfil.html?curso=${cursoKey}`;
         }
 
@@ -272,15 +258,46 @@
                 return;
             }
 
-            if (cursoObj) {
-                document.getElementById('item-nombre').innerText = cursoObj.titulo;
-                document.getElementById('cuota-precio').innerText = cursoObj.precio;
-                
-                // Calcular total (arancel numérico + 15000 de matrícula)
-                const valorNumerico = parseInt(cursoObj.precio.replace(/\D/g, '')) || 0;
-                const total = valorNumerico + 15000;
-                
-                document.getElementById('monto-final').innerText = `$${total.toLocaleString('es-AR')}`;
+            if (selectedCourses.length > 0) {
+                const summaryContainer = document.getElementById('checkout-summary-container');
+                if (summaryContainer) {
+                    let listHTML = '';
+                    let subtotalCuota = 0;
+
+                    selectedCourses.forEach(curso => {
+                        const precioNumerico = parseInt(curso.precio.replace(/\D/g, '')) || 0;
+                        subtotalCuota += precioNumerico;
+
+                        listHTML += `
+                            <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; margin-bottom: 0.5rem;">
+                                <strong style="font-size: 0.9rem; line-height: 1.2; display:block; color: var(--texto-principal);">${curso.titulo}</strong>
+                                <span style="font-size: 0.75rem; color:var(--texto-muted);">${curso.cat} — ${curso.precio}</span>
+                            </div>
+                        `;
+                    });
+
+                    const total = subtotalCuota + 15000; // sumatoria de aranceles + $15.000 matrícula de admisión
+
+                    summaryContainer.innerHTML = `
+                        <div style="display:flex; flex-direction:column; gap: 0.5rem;">
+                            ${listHTML}
+                        </div>
+                        <div style="background-color: var(--fondo-principal); padding: 1rem; border-radius: var(--radius-sm); font-size:0.9rem; display:flex; flex-direction:column; gap:0.5rem; margin-top: 0.5rem;">
+                            <div style="display:flex; justify-content:space-between;">
+                                <span>Matrícula de Ingreso:</span>
+                                <strong>$15.000</strong>
+                            </div>
+                            <div style="display:flex; justify-content:space-between;">
+                                <span>Total Mensual Cuotas:</span>
+                                <strong>$${subtotalCuota.toLocaleString('es-AR')}</strong>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; border-top:1px dashed var(--border-color); padding-top:0.5rem; font-weight:700; font-size: 1rem;">
+                                <span>Monto Final A Pagar:</span>
+                                <span style="color:var(--color-untref); font-weight: 800;">$${total.toLocaleString('es-AR')}</span>
+                            </div>
+                        </div>
+                    `;
+                }
             }
 
             // Inicializar nombre en la tarjeta con el nombre del legajo del alumno

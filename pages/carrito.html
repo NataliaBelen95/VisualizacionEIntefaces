@@ -451,11 +451,12 @@
             if (cart.length > 0) {
                 // Verificar si hay sesión activa en localStorage
                 const user = localStorage.getItem("untref_user_name");
+                const cursoQuery = cart.join(',');
                 if (!user) {
                     // Redirigir a iniciar sesión guardando el paso siguiente en la query
-                    window.location.href = `iniciar-sesion.html?next=inscripcion.html?curso=${cart[0]}`;
+                    window.location.href = `iniciar-sesion.html?next=inscripcion.html?curso=${cursoQuery}`;
                 } else {
-                    window.location.href = `inscripcion.html?curso=${cart[0]}`;
+                    window.location.href = `inscripcion.html?curso=${cursoQuery}`;
                 }
             }
         }

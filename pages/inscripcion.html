@@ -248,43 +248,73 @@
     <script>
         const params = new URLSearchParams(window.location.search);
         const cursoParam = params.get('curso') || 'datos';
-        const cursoObj = CAT_CURSOS[cursoParam];
+        
+        // Separar las claves de cursos seleccionados
+        const cursoKeys = cursoParam.split(',');
+        const selectedCursos = cursoKeys.map(k => CAT_CURSOS[k]).filter(Boolean);
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Rellenar resumen lateral si el curso existe
-            if (cursoObj) {
-                document.getElementById('sum-titulo').innerText = cursoObj.titulo;
-                document.getElementById('sum-cat').innerText = cursoObj.cat;
-                document.getElementById('sum-duracion').innerText = cursoObj.duracion;
-                document.getElementById('sum-modalidad').innerText = cursoObj.modalidad;
-                document.getElementById('sum-precio').innerText = cursoObj.precio;
-                
-                if(cursoObj.gratis) {
-                    document.getElementById('sum-precio').style.color = "var(--color-success)";
-                }
+            if (selectedCursos.length > 0) {
+                const summaryContainer = document.getElementById('summary-content');
+                if (summaryContainer) {
+                    // Limpiar el contenedor y renderizar la lista de cursos
+                    let htmlContent = '';
+                    let subtotalPrecio = 0;
+                    const esTodoGratis = selectedCursos.every(c => c.gratis);
 
-                // Lógica de gratuidad (Nielsen #7: Eficiencia de Uso)
-                if (cursoObj.gratis) {
-                    // 1. Modificar barra de progreso
-                    document.getElementById('step-pago').innerHTML = `<i class="fas fa-check-double"></i> 3. Ingreso Directo`;
+                    selectedCursos.forEach(curso => {
+                        const precioNumerico = parseInt(curso.precio.replace(/\D/g, '')) || 0;
+                        subtotalPrecio += precioNumerico;
+
+                        htmlContent += `
+                            <div class="summary-item" style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; margin-bottom: 0.75rem;">
+                                <span style="font-size: 0.65rem; font-weight: 800; color: var(--texto-muted); text-transform: uppercase;">${curso.cat}</span>
+                                <h4 style="font-size: 0.95rem; color: var(--texto-principal); margin: 0.15rem 0; line-height: 1.2;">${curso.titulo}</h4>
+                                <div style="font-size: 0.75rem; color: var(--texto-secundario); display: flex; gap: 1rem; margin-top: 0.25rem;">
+                                    <span><i class="far fa-clock"></i> ${curso.duracion}</span>
+                                    <span><i class="fas fa-laptop-house"></i> ${curso.modalidad}</span>
+                                </div>
+                                <div style="text-align: right; margin-top: 0.5rem; font-weight: 700; font-size: 0.9rem; color: ${curso.gratis ? 'var(--color-success)' : 'var(--texto-principal)'}">
+                                    ${curso.precio}
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    // Mostrar sumatoria de aranceles al final del bloque
+                    const precioTotalTexto = esTodoGratis ? 'Gratis' : `$${subtotalPrecio.toLocaleString('es-AR')}/mes`;
                     
-                    // 2. Ocultar sección de facturación
-                    const facturacion = document.getElementById('seccion-facturacion');
-                    if (facturacion) facturacion.style.display = 'none';
+                    htmlContent += `
+                        <div style="border-top: 1.5px solid var(--border-color); padding-top: 1rem; display:flex; justify-content:space-between; align-items:center;">
+                            <span style="font-weight:700; font-size:0.9rem;">Cuota Total:</span>
+                            <strong style="font-size:1.15rem; color: ${esTodoGratis ? 'var(--color-success)' : 'var(--color-untref)'};">${precioTotalTexto}</strong>
+                        </div>
+                    `;
+                    summaryContainer.innerHTML = htmlContent;
 
-                    // 3. Quitar atributos required de campos de facturación
-                    document.getElementById('direccion').removeAttribute('required');
-                    document.getElementById('provincia').removeAttribute('required');
+                    // Lógica de gratuidad (Nielsen #7: Eficiencia de Uso)
+                    if (esTodoGratis) {
+                        // 1. Modificar barra de progreso
+                        document.getElementById('step-pago').innerHTML = `<i class="fas fa-check-double"></i> 3. Ingreso Directo`;
+                        
+                        // 2. Ocultar sección de facturación
+                        const facturacion = document.getElementById('seccion-facturacion');
+                        if (facturacion) facturacion.style.display = 'none';
 
-                    // 4. Modificar botón final
-                    const btn = document.getElementById('btn-envio-formulario');
-                    document.getElementById('texto-boton').innerText = "Finalizar Admisión Directa";
-                    document.getElementById('icono-boton').className = "fas fa-user-check";
-                    btn.className = "btn btn-success btn-full";
-                } else {
-                    // Si es de pago, establecer requerimientos obligatorios
-                    document.getElementById('direccion').setAttribute('required', 'true');
-                    document.getElementById('provincia').setAttribute('required', 'true');
+                        // 3. Quitar atributos required de campos de facturación
+                        document.getElementById('direccion').removeAttribute('required');
+                        document.getElementById('provincia').removeAttribute('required');
+
+                        // 4. Modificar botón final
+                        const btn = document.getElementById('btn-envio-formulario');
+                        document.getElementById('texto-boton').innerText = "Finalizar Admisión Directa";
+                        document.getElementById('icono-boton').className = "fas fa-user-check";
+                        btn.className = "btn btn-success btn-full";
+                    } else {
+                        // Si es de pago, establecer requerimientos obligatorios
+                        document.getElementById('direccion').setAttribute('required', 'true');
+                        document.getElementById('provincia').setAttribute('required', 'true');
+                    }
                 }
             }
 
@@ -296,7 +326,8 @@
                 const nombreVal = document.getElementById('nombre').value;
                 localStorage.setItem("untref_user_name", nombreVal);
 
-                if (cursoObj && cursoObj.gratis) {
+                const esTodoGratis = selectedCursos.every(c => c.gratis);
+                if (esTodoGratis) {
                     // Cursos gratuitos van directo al dashboard
                     window.location.href = `perfil.html?curso=${cursoParam}`;
                 } else {
