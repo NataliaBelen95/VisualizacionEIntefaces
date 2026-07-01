@@ -105,7 +105,7 @@
             <!-- Línea de progreso (Nielsen #1: System Status, Gestalt: Continuidad) -->
             <div class="steps-progress">
                 <div class="step-item completed"><i class="fas fa-check-circle"></i> 1. Selección</div>
-                <div class="step-item active"><i class="fas fa-edit"></i> 2. Legajo Académico</div>
+                <div class="step-item active"><i class="fas fa-edit"></i> 2. Registro</div>
                 <div class="step-item" id="step-pago"><i class="fas fa-lock"></i> 3. Pago Seguro</div>
             </div>
 
@@ -141,24 +141,7 @@
                         </div>
                     </div>
 
-                    <!-- BLOQUE 2: ANTECEDENTES ACADÉMICOS -->
-                    <h3 class="section-header-form"><i class="fas fa-graduation-cap"></i> Formación Previa</h3>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="nivel-estudios">Máximo Nivel Alcanzado</label>
-                            <select id="nivel-estudios" required>
-                                <option value="secundario">Secundario Completo</option>
-                                <option value="terciario">Terciario en Curso / Completo</option>
-                                <option value="universitario">Universitario en Curso / Completo</option>
-                                <option value="posgrado">Posgrado / Maestría</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="institucion">Institución Emisora del Título</label>
-                            <input type="text" id="institucion" required placeholder="Ej: Colegio Secundario / Universidad">
-                        </div>
-                    </div>
+
 
                     <!-- BLOQUE 3: FACTURACIÓN (Oculto condicionalmente si es gratis) -->
                     <div id="seccion-facturacion">
@@ -348,13 +331,6 @@
                 document.getElementById('dni').style.backgroundColor = "var(--border-color)";
                 document.getElementById('dni').style.cursor = "not-allowed";
                 document.getElementById('dni').style.opacity = "0.7";
-                
-                document.getElementById('nivel-estudios').value = "universitario";
-                document.getElementById('institucion').value = "Colegio Nacional de Buenos Aires";
-                document.getElementById('institucion').readOnly = true;
-                document.getElementById('institucion').style.backgroundColor = "var(--border-color)";
-                document.getElementById('institucion').style.cursor = "not-allowed";
-                document.getElementById('institucion').style.opacity = "0.7";
             }
 
             // Manejo de envío
