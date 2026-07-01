@@ -276,30 +276,38 @@
                 // Configurar enlace de inscripción directa con verificación de sesión
                 const user = localStorage.getItem("untref_user_name");
                 const btnInscribirse = document.getElementById('btn-inscribirse');
-                if (!user) {
-                    btnInscribirse.href = `iniciar-sesion.html?next=inscripcion.html?curso=${id}`;
+                const btnCartToggle = document.getElementById('btn-cart-toggle');
+
+                if (curso.gratis) {
+                    // Para cursos gratis, mostrar solo botón de inscripción directa
+                    btnCartToggle.style.display = "none";
+                    btnInscribirse.style.display = "block";
+                    btnInscribirse.innerHTML = `<i class="fas fa-user-check"></i> Inscribirse Gratis`;
+                    if (!user) {
+                        btnInscribirse.href = `iniciar-sesion.html?next=inscripcion.html?curso=${id}`;
+                    } else {
+                        btnInscribirse.href = `inscripcion.html?curso=${id}`;
+                    }
                 } else {
-                    btnInscribirse.href = `inscripcion.html?curso=${id}`;
+                    // Para cursos arancelados, mostrar solo el botón de carrito
+                    btnInscribirse.style.display = "none";
+                    btnCartToggle.style.display = "block";
+                    actualizarBotonCarrito();
                 }
-                
-                // Actualizar estado del botón de carrito
-                actualizarBotonCarrito();
             }
         });
 
         function toggleCart() {
             const carrito = obtenerCarrito();
-            const btn = document.getElementById('btn-cart-toggle');
             if (carrito.includes(id)) {
-                eliminarDelCarrito(id);
-                btn.innerHTML = `<i class="fas fa-cart-plus"></i> Agregar al Carrito`;
-                btn.className = "btn btn-secondary btn-full";
+                // Si ya está en el carrito, al hacer clic redirige a la página del carrito (Heurística #7)
+                window.location.href = "carrito.html";
             } else {
+                // Si no está, lo agrega
                 agregarAlCarrito(id);
-                btn.innerHTML = `<i class="fas fa-check"></i> En el Carrito`;
-                btn.className = "btn btn-success btn-full";
+                actualizarBotonCarrito();
+                actualizarBadgeCarrito();
             }
-            actualizarBadgeCarrito();
         }
 
         function actualizarBotonCarrito() {
@@ -307,8 +315,8 @@
             const btn = document.getElementById('btn-cart-toggle');
             if (btn) {
                 if (carrito.includes(id)) {
-                    btn.innerHTML = `<i class="fas fa-check"></i> En el Carrito`;
-                    btn.className = "btn btn-success btn-full";
+                    btn.innerHTML = `<i class="fas fa-shopping-bag"></i> Ver Carrito y Pagar`;
+                    btn.className = "btn btn-primary btn-full";
                 } else {
                     btn.innerHTML = `<i class="fas fa-cart-plus"></i> Agregar al Carrito`;
                     btn.className = "btn btn-secondary btn-full";
