@@ -708,6 +708,7 @@ footer {
   font-size: 0.85rem;
   line-height: 1.55;
   color: var(--texto-secundario);
+  max-width: 480px; /* Evita que el texto descriptivo se estire demasiado a lo largo (Heurística #8: Estética y minimalismo) */
 }
 
 .download-list {
