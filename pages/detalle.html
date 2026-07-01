@@ -191,7 +191,7 @@
                 <!-- Botones de Acción (Nielsen #3: Control de Usuario) -->
                 <div style="display: flex; flex-direction: column; gap: 0.75rem;">
                     <a href="#" id="btn-inscribirse" class="btn btn-primary btn-full"><i class="fas fa-pen-nib"></i> Iniciar Inscripción</a>
-                    <button id="btn-cart-toggle" class="btn btn-secondary btn-full" onclick="toggleCart()"><i class="fas fa-cart-plus"></i> Agregar al Carrito</button>
+                    <button id="btn-cart-toggle" class="btn btn-secondary btn-full" onclick="toggleCart()"><i class="fas fa-shopping-cart"></i> Agregar al Carrito</button>
                 </div>
 
                 <div style="font-size: 0.75rem; color: var(--texto-muted); text-align: center; border-top: 1px solid var(--border-color); padding-top: 1rem;">
@@ -300,14 +300,12 @@
         function toggleCart() {
             const carrito = obtenerCarrito();
             if (carrito.includes(id)) {
-                // Si ya está en el carrito, al hacer clic redirige a la página del carrito (Heurística #7)
-                window.location.href = "carrito.html";
+                eliminarDelCarrito(id);
             } else {
-                // Si no está, lo agrega
                 agregarAlCarrito(id);
-                actualizarBotonCarrito();
-                actualizarBadgeCarrito();
             }
+            actualizarBotonCarrito();
+            actualizarBadgeCarrito();
         }
 
         function actualizarBotonCarrito() {
@@ -315,10 +313,10 @@
             const btn = document.getElementById('btn-cart-toggle');
             if (btn) {
                 if (carrito.includes(id)) {
-                    btn.innerHTML = `<i class="fas fa-shopping-bag"></i> Ver Carrito y Pagar`;
-                    btn.className = "btn btn-primary btn-full";
+                    btn.innerHTML = `<i class="fas fa-shopping-cart"></i> Quitar del Carrito`;
+                    btn.className = "btn btn-danger btn-full";
                 } else {
-                    btn.innerHTML = `<i class="fas fa-cart-plus"></i> Agregar al Carrito`;
+                    btn.innerHTML = `<i class="fas fa-shopping-cart"></i> Agregar al Carrito`;
                     btn.className = "btn btn-secondary btn-full";
                 }
             }
